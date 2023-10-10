@@ -11,7 +11,7 @@ public class TS_JdbSimpleTest {
         var dbPath = TS_PathUtils.getPathCurrent_nio(d.className + ".jdb");
         d.cr("main", "dbPath", dbPath);
         var jdbs = TS_JdbSimple.of(dbPath);
-        jdbs.setStringFromPostion(100, "Hello World!");
+        jdbs.setCharSequenceFromPostion(100, "Hello World!");
         var hw = jdbs.getStringFromPostion(100).orThrowFirstInfo();
         d.cr("main", "hw", hw);
     }

@@ -64,10 +64,10 @@ public class TS_JdbSimpleUtils {
         }, e -> TGS_Optional.ofEmpty(e.getMessage()));
     }
 
-    public static Exception setStringFromPostion(RandomAccessFile raf, int position, String value) {
+    public static Exception setCharSequenceFromPostion(RandomAccessFile raf, int position, CharSequence value) {
         return TGS_UnSafe.call(() -> {
             raf.seek(position);
-            raf.writeUTF(value);
+            raf.writeUTF(value.toString());
             return null;
         }, e -> e);
     }

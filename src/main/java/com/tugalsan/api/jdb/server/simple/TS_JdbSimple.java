@@ -74,7 +74,7 @@ public class TS_JdbSimple {
         return call(jdb -> TS_JdbSimpleUtils.getStringFromPostion(jdb, position).orThrowFirstInfo());
     }
 
-    public Exception setStringFromPostion(int position, String value) {
-        return run(raf -> TS_JdbSimpleUtils.setStringFromPostion(raf, position, value));
+    public Exception setCharSequenceFromPostion(int position, CharSequence value) {
+        return run(raf -> TS_JdbSimpleUtils.setCharSequenceFromPostion(raf, position, value));
     }
 }
