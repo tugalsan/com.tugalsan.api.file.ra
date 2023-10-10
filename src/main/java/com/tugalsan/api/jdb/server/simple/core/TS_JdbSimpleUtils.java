@@ -1,6 +1,7 @@
 package com.tugalsan.api.jdb.server.simple.core;
 
 import com.tugalsan.api.bytes.client.TGS_ByteLengthUtils;
+import com.tugalsan.api.log.server.TS_Log;
 import com.tugalsan.api.optional.client.TGS_Optional;
 import com.tugalsan.api.unsafe.client.TGS_UnSafe;
 import java.io.File;
@@ -8,6 +9,8 @@ import java.io.FileNotFoundException;
 import java.io.RandomAccessFile;
 
 public class TS_JdbSimpleUtils {
+
+    final private static TS_Log d = TS_Log.of(false, TS_JdbSimpleUtils.class);
 
     public static RandomAccessFile create(File file) throws FileNotFoundException {
         return new RandomAccessFile(file, "rw");
@@ -17,7 +20,7 @@ public class TS_JdbSimpleUtils {
         return TGS_UnSafe.call(() -> {
             raf.seek(position);
             return TGS_Optional.of(raf.readDouble());
-        }, e -> TGS_Optional.ofEmpty(e.getMessage()));
+        }, e -> TGS_Optional.ofEmpty(e.getClass().getSimpleName() + ":" + e.getMessage()));
     }
 
     public static TGS_Optional<Long> setDoubleFromPostion_calcNextPosition(RandomAccessFile raf, long position, double value) {
@@ -25,14 +28,14 @@ public class TS_JdbSimpleUtils {
             raf.seek(position);
             raf.writeDouble(value);
             return TGS_Optional.of(position + TGS_ByteLengthUtils.typeDouble());
-        }, e -> TGS_Optional.ofEmpty(e.getMessage()));
+        }, e -> TGS_Optional.ofEmpty(e.getClass().getSimpleName() + ":" + e.getMessage()));
     }
 
     public static TGS_Optional<Long> getLongFromPostion(RandomAccessFile raf, long position) {
         return TGS_UnSafe.call(() -> {
             raf.seek(position);
             return TGS_Optional.of(raf.readLong());
-        }, e -> TGS_Optional.ofEmpty(e.getMessage()));
+       }, e -> TGS_Optional.ofEmpty(e.getClass().getSimpleName() + ":" + e.getMessage()));
     }
 
     public static TGS_Optional<Long> setLongFromPostion_calcNextPosition(RandomAccessFile raf, long position, long value) {
@@ -40,14 +43,16 @@ public class TS_JdbSimpleUtils {
             raf.seek(position);
             raf.writeLong(value);
             return TGS_Optional.of(position + TGS_ByteLengthUtils.typeLong());
-        }, e -> TGS_Optional.ofEmpty(e.getMessage()));
+        }, e -> TGS_Optional.ofEmpty(e.getClass().getSimpleName() + ":" + e.getMessage()));
     }
 
     public static TGS_Optional<String> getStringFromPostion(RandomAccessFile raf, long position) {
         return TGS_UnSafe.call(() -> {
             raf.seek(position);
-            return TGS_Optional.of(raf.readUTF());
-        }, e -> TGS_Optional.ofEmpty(e.getMessage()));
+            var op = TGS_Optional.of(raf.readUTF());
+            d.ce("getStringFromPostion", "op", op);
+            return op;
+        }, e -> TGS_Optional.ofEmpty(e.getClass().getSimpleName() + ":" + e.getMessage()));
     }
 
     public static TGS_Optional<Long> setStringFromPostion_calcNextPosition(RandomAccessFile raf, long position, String value) {
@@ -55,6 +60,6 @@ public class TS_JdbSimpleUtils {
             raf.seek(position);
             raf.writeUTF(value);
             return TGS_Optional.of(position + TGS_ByteLengthUtils.typeStringUTF16(value));
-        }, e -> TGS_Optional.ofEmpty(e.getMessage()));
+       }, e -> TGS_Optional.ofEmpty(e.getClass().getSimpleName() + ":" + e.getMessage()));
     }
 }

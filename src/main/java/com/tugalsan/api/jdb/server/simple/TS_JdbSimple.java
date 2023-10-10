@@ -29,7 +29,7 @@ public class TS_JdbSimple {
             try (var raf = TS_JdbSimpleUtils.create(file)) {
                 return TGS_Optional.of(call.call(raf));
             }
-        }, e -> TGS_Optional.ofEmpty(e.getMessage()), () -> lock.unlock());
+        }, e -> TGS_Optional.ofEmpty(e.getClass().getSimpleName() + ":" + e.getMessage()), () -> lock.unlock());
     }
     final private Lock lock = new ReentrantLock();
 

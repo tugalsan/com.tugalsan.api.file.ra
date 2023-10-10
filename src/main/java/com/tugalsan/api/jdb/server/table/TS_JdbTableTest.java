@@ -12,10 +12,10 @@ public class TS_JdbTableTest {
     public static void main(String... s) {
         var dbPath = TS_PathUtils.getPathCurrent_nio(TS_JdbTableTest.class.getName() + ".jdb");
         d.cr("main", "dbPath", dbPath);
-        list(dbPath);
+        table(dbPath);
     }
 
-    public static void list(Path dbPath) {
+    public static void table(Path dbPath) {
         var r = new Random();
         var colId = TS_JdbTableColLng.of(0);
         var colName = TS_JdbTableColStr.of(20);

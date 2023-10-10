@@ -17,7 +17,7 @@ public class TS_JdbAdvancedFile extends TS_JdbAdvancedBase {
     protected Hashtable memIndex;
 
     public static TGS_Optional<TS_JdbAdvancedFile> of(Path dbPath) {
-        return TGS_UnSafe.call(() -> TS_FileUtils.isExistFile(dbPath) ? TGS_Optional.of(new TS_JdbAdvancedFile(dbPath, "rw")) : TGS_Optional.of(new TS_JdbAdvancedFile(dbPath, 64)), e -> TGS_Optional.ofEmpty(e.getMessage()));
+        return TGS_UnSafe.call(() -> TS_FileUtils.isExistFile(dbPath) ? TGS_Optional.of(new TS_JdbAdvancedFile(dbPath, "rw")) : TGS_Optional.of(new TS_JdbAdvancedFile(dbPath, 64)), e -> TGS_Optional.ofEmpty(e.getClass().getSimpleName() + ":" + e.getMessage()));
     }
 
     /**
