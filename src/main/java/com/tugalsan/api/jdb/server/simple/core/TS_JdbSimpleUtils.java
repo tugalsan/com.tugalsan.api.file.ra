@@ -50,7 +50,7 @@ public class TS_JdbSimpleUtils {
         return TGS_UnSafe.call(() -> {
             raf.seek(position);
             var op = TGS_Optional.of(raf.readUTF());
-            d.ce("getStringFromPostion", "op", op);
+            d.ci("getStringFromPostion", "op", op);
             return op;
         }, e -> TGS_Optional.ofEmpty(e.getClass().getSimpleName() + ":" + e.getMessage()));
     }

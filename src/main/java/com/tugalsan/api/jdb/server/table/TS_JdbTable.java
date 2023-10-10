@@ -42,7 +42,7 @@ public class TS_JdbTable {
 
     private long position(long idx) {
         var pos = idx * colConfig.byteSize();
-        d.ce("position", pos);
+        d.ci("position", pos);
         return pos;
     }
 
@@ -56,23 +56,23 @@ public class TS_JdbTable {
                 var value = TS_JdbTableColDbl.of(val);
                 lst.add(value);
                 position += value.byteSize();
-                d.ce("rowGet", "i", i, "pos", position);
+                d.ci("rowGet", "i", i, "pos", position);
             } else if (type instanceof TS_JdbTableColLng) {
                 var val = simple.getLongFromPostion(position).orThrowFirstInfo();
                 var value = TS_JdbTableColLng.of(val);
                 lst.add(value);
                 position += value.byteSize();
-                d.ce("rowGet", "i", i, "pos", position);
+                d.ci("rowGet", "i", i, "pos", position);
             } else if (type instanceof TS_JdbTableColStr typeStr) {
                 var valOp = simple.getStringFromPostion(position);
-                d.ce("valOp", valOp);
+                d.ci("valOp", valOp);
                 var val = valOp.orThrowFirstInfo();
                 var valueStr = TS_JdbTableColStr.of(typeStr.byteSize());
                 valueStr.set(val);
                 var value = valueStr;
                 lst.add(value);
                 position += value.byteSize();
-                d.ce("rowGet", "i", i, "pos", position);
+                d.ci("rowGet", "i", i, "pos", position);
             } else if (type instanceof TS_JdbTableColStr) {
                 throw new RuntimeException("ERROR @ TS_JdbList.rowGet: unkwon col type");
             }
@@ -92,14 +92,14 @@ public class TS_JdbTable {
                 Object value = newRow.get(i);
                 if (type instanceof TS_JdbTableColDbl) {
                     position = simple.setDoubleFromPostion_calcNextPosition(position, ((TS_JdbTableColDbl) value).value).orThrowFirstInfo();
-                    d.ce("rowSet", "i", i, "pos", position);
+                    d.ci("rowSet", "i", i, "pos", position);
                 } else if (type instanceof TS_JdbTableColLng) {
                     position = simple.setLongFromPostion_calcNextPosition(position, ((TS_JdbTableColLng) value).value).orThrowFirstInfo();
-                    d.ce("rowSet", "i", i, "pos", position);
+                    d.ci("rowSet", "i", i, "pos", position);
                 } else if (type instanceof TS_JdbTableColStr typeStr) {
                     simple.setStringFromPostion_calcNextPosition(position, ((TS_JdbTableColStr) value).get()).orThrowFirstInfo();
                     position += typeStr.byteSize();
-                    d.ce("rowSet", "i", i, "pos", position);
+                    d.ci("rowSet", "i", i, "pos", position);
                 } else {
                     throw new RuntimeException("ERROR @ TS_JdbList.rowGet: unkwon col type");
                 }
