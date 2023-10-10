@@ -1,21 +1,21 @@
-package com.tugalsan.api.jdb.server.list;
+package com.tugalsan.api.jdb.server.table;
 
 import com.tugalsan.api.bytes.client.TGS_ByteLengthUtils;
 
-public class TS_JdbListColStr extends TS_JdbListColumnBase {
+public class TS_JdbTableColStr extends TS_JdbTableColBase {
 
     @Override
     public int byteSize() {
         return byteSize;
     }
 
-    public TS_JdbListColStr(int byteSize) {
+    public TS_JdbTableColStr(int byteSize) {
         this.byteSize = byteSize;
     }
     final private int byteSize;
 
-    public static TS_JdbListColStr of(int byteSize) {
-        return new TS_JdbListColStr(byteSize);
+    public static TS_JdbTableColStr of(int byteSize) {
+        return new TS_JdbTableColStr(byteSize);
     }
 
     private volatile String value = "";
