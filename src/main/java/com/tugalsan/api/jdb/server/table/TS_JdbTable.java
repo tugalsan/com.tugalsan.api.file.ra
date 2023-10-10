@@ -79,11 +79,11 @@ public class TS_JdbTable {
                 var type = colConfig.types.get(i);
                 Object value = newRow.get(i);
                 if (type instanceof TS_JdbTableColDbl) {
-                    position = simple.setDoubleFromPostion_calcNextPosition(position, (Double) value).orThrowFirstInfo();
+                    position = simple.setDoubleFromPostion_calcNextPosition(position, ((TS_JdbTableColDbl) value).value).orThrowFirstInfo();
                 } else if (type instanceof TS_JdbTableColLng) {
-                    position = simple.setLongFromPostion_calcNextPosition(position, (Long) value).orThrowFirstInfo();
+                    position = simple.setLongFromPostion_calcNextPosition(position, ((TS_JdbTableColLng) value).value).orThrowFirstInfo();
                 } else if (type instanceof TS_JdbTableColStr) {
-                    position = simple.setStringFromPostion_calcNextPosition(position, (String) value).orThrowFirstInfo();
+                    position = simple.setStringFromPostion_calcNextPosition(position, ((TS_JdbTableColStr) value).get()).orThrowFirstInfo();
                 } else if (type instanceof TS_JdbTableColStr) {
                     throw new RuntimeException("ERROR @ TS_JdbList.rowGet: unkwon col type");
                 }
