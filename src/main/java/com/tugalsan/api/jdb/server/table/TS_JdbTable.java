@@ -2,12 +2,15 @@ package com.tugalsan.api.jdb.server.table;
 
 import com.tugalsan.api.file.server.TS_FileUtils;
 import com.tugalsan.api.jdb.server.simple.TS_JdbSimple;
+import com.tugalsan.api.log.server.TS_Log;
 import com.tugalsan.api.unsafe.client.TGS_UnSafe;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TS_JdbTable {
+
+    final private static TS_Log d = TS_Log.of(false, TS_JdbTable.class);
 
     private TS_JdbTable(Path path, TS_JdbTableConfig colConfig) {
         this.simple = TS_JdbSimple.of(path);
@@ -55,7 +58,9 @@ public class TS_JdbTable {
                 var value = TS_JdbTableColLng.of(val);
                 lst.add(value);
             } else if (type instanceof TS_JdbTableColStr typeStr) {
-                var val = simple.getStringFromPostion(position).orThrowFirstInfo();
+                var valOp = simple.getStringFromPostion(position);
+                d.ce("valOp", valOp);
+                var val = valOp.orThrowFirstInfo();
                 var valueStr = TS_JdbTableColStr.of(typeStr.byteSize());
                 valueStr.set(val);
                 var value = valueStr;
