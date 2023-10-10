@@ -53,6 +53,7 @@ public class TS_JdbSimple {
         return call(jdb -> TS_JdbSimpleUtils.getStringFromPostion(jdb, position).orThrowFirstInfo());
     }
 
+    @Deprecated //WARNING: CHECK BYTE SIZE
     public TGS_Optional<Long> setStringFromPostion_calcNextPosition(long position, String value) {
         return call(raf -> TS_JdbSimpleUtils.setStringFromPostion_calcNextPosition(raf, position, value).orThrowFirstInfo());
     }

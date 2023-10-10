@@ -55,11 +55,12 @@ public class TS_JdbSimpleUtils {
         }, e -> TGS_Optional.ofEmpty(e.getClass().getSimpleName() + ":" + e.getMessage()));
     }
 
+    @Deprecated //WARNING: CHECK BYTE SIZE
     public static TGS_Optional<Long> setStringFromPostion_calcNextPosition(RandomAccessFile raf, long position, String value) {
         return TGS_UnSafe.call(() -> {
             raf.seek(position);
             raf.writeUTF(value);
-            return TGS_Optional.of(position + TGS_ByteLengthUtils.typeStringUTF16(value));
+            return TGS_Optional.of(position + TGS_ByteLengthUtils.typeStringUTF8(value));
         }, e -> TGS_Optional.ofEmpty(e.getClass().getSimpleName() + ":" + e.getMessage()));
     }
 }

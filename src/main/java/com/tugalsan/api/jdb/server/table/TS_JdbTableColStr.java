@@ -24,6 +24,14 @@ public class TS_JdbTableColStr extends TS_JdbTableColBase {
         return value;
     }
 
+    public void set_cropIfNotProper(String newValue) {
+        if (!properIs(newValue)) {
+            newValue = properMake(newValue);
+        }
+        this.value = newValue;
+    }
+
+    @Deprecated //WARNING MAY NOT SET IF NOT PROPER!
     public boolean set(String newValue) {
         if (!properIs(newValue)) {
             return false;
@@ -33,7 +41,7 @@ public class TS_JdbTableColStr extends TS_JdbTableColBase {
     }
 
     public boolean properIs(String newValue) {
-        return newValue != null && TGS_ByteLengthUtils.typeStringUTF16(newValue) > byteSize;
+        return newValue != null && TGS_ByteLengthUtils.typeStringUTF8(newValue) <= byteSize;
     }
 
     public String properMake(String newValue) {
