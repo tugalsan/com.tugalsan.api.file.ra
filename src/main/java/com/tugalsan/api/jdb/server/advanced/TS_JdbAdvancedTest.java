@@ -13,7 +13,7 @@ public class TS_JdbAdvancedTest {
 
     public static void main(String... s) {
         TGS_UnSafe.run(() -> {
-            var dbPath = TS_PathUtils.getPathCurrent_nio(d.className + ".jdb");
+            var dbPath = TS_PathUtils.getPathCurrent_nio(TS_JdbAdvancedTest.class.getName() + ".jdb");
             var dbOp = TS_JdbAdvancedFile.of(dbPath);
             if (dbOp.payload.isEmpty()) {
                 d.ce("main", "ERROR @ RecordsFile.of", dbOp.info);

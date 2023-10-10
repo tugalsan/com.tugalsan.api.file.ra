@@ -3,7 +3,6 @@ package com.tugalsan.api.jdb.server.simple;
 import com.tugalsan.api.jdb.server.simple.core.TS_JdbSimpleUtils;
 import com.tugalsan.api.callable.client.TGS_CallableType1;
 import com.tugalsan.api.optional.client.TGS_Optional;
-import com.tugalsan.api.runnable.client.TGS_RunnableType1;
 import com.tugalsan.api.unsafe.client.TGS_UnSafe;
 import java.io.File;
 import java.io.RandomAccessFile;
@@ -24,18 +23,6 @@ public class TS_JdbSimple {
         return new TS_JdbSimple(path);
     }
 
-    private Exception run(TGS_RunnableType1<RandomAccessFile> run) {
-        TGS_CallableType1<Void, RandomAccessFile> callable = raf -> {
-            run.run(raf);
-            return null;
-        };
-        var optional = call(callable);
-        if (!optional.info.isEmpty()) {
-            return new Exception(String.valueOf(optional.info.getFirst()));
-        }
-        return null;
-    }
-
     private <T> TGS_Optional<T> call(TGS_CallableType1<T, RandomAccessFile> call) {
         return TGS_UnSafe.call(() -> {
             lock.lock();
@@ -46,35 +33,27 @@ public class TS_JdbSimple {
     }
     final private Lock lock = new ReentrantLock();
 
-    public TGS_Optional<Boolean> getBooleanFromPostion(int position) {
-        return call(raf -> TS_JdbSimpleUtils.getBooleanFromPostion(raf, position).orThrowFirstInfo());
-    }
-
-    public Exception setBooleanFromPostion(int position, boolean value) {
-        return run(raf -> TS_JdbSimpleUtils.setBooleanFromPostion(raf, position, value));
-    }
-
     public TGS_Optional<Double> getDoubleFromPostion(int position) {
         return call(jdb -> TS_JdbSimpleUtils.getDoubleFromPostion(jdb, position).orThrowFirstInfo());
     }
 
-    public Exception setDoubleFromPostion(int position, double value) {
-        return run(raf -> TS_JdbSimpleUtils.setDoubleFromPostion(raf, position, value));
+    public TGS_Optional<Integer> setDoubleFromPostion_calcNextPosition(int position, double value) {
+        return call(raf -> TS_JdbSimpleUtils.setDoubleFromPostion_calcNextPosition(raf, position, value).orThrowFirstInfo());
     }
 
     public TGS_Optional<Long> getLongFromPostion(int position) {
         return call(jdb -> TS_JdbSimpleUtils.getLongFromPostion(jdb, position).orThrowFirstInfo());
     }
 
-    public Exception setLongFromPostion(int position, long value) {
-        return run(raf -> TS_JdbSimpleUtils.setLongFromPostion(raf, position, value));
+    public TGS_Optional<Integer> setLongFromPostion_calcNextPosition(int position, long value) {
+        return call(raf -> TS_JdbSimpleUtils.setLongFromPostion_calcNextPosition(raf, position, value).orThrowFirstInfo());
     }
 
     public TGS_Optional<String> getStringFromPostion(int position) {
         return call(jdb -> TS_JdbSimpleUtils.getStringFromPostion(jdb, position).orThrowFirstInfo());
     }
 
-    public Exception setCharSequenceFromPostion(int position, CharSequence value) {
-        return run(raf -> TS_JdbSimpleUtils.setCharSequenceFromPostion(raf, position, value));
+    public TGS_Optional<Integer> setStringFromPostion_calcNextPosition(int position, String value) {
+        return call(raf -> TS_JdbSimpleUtils.setStringFromPostion_calcNextPosition(raf, position, value).orThrowFirstInfo());
     }
 }

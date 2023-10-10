@@ -1,4 +1,5 @@
 module com.tugalsan.api.jdb {
+    requires com.tugalsan.api.bytes;
     requires com.tugalsan.api.time;
     requires com.tugalsan.api.file;
     requires com.tugalsan.api.optional;
