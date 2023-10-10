@@ -22,55 +22,53 @@ public class TS_JdbTableTest {
         var colPrice = TS_JdbTableColDbl.of(0);
 
         var jdbt = TS_JdbTable.of(dbPath, colId, colName, colPrice);
-        TS_JdbTableColStr.of(10);
         d.cr("main", "rowSize", jdbt.rowSize());
 
-        if (true) {
-            {
-                colId.value = r.nextInt();
-                colName.set_cropIfNotProper("FirstString");
-                colPrice.value = r.nextDouble();
-                var e = jdbt.rowSet(0, colId, colName, colPrice);
-                if (e != null) {
-                    throw new RuntimeException(e);
-                }
-                d.cr("main", "FirstString", "rowSize", jdbt.rowSize());
+        {
+            colId.value = r.nextInt();
+            colName.set_cropIfNotProper("FirstString");
+            colPrice.value = r.nextDouble();
+            var e = jdbt.rowSet(0, colId, colName, colPrice);
+            if (e != null) {
+                throw new RuntimeException(e);
             }
-
-            {
-                colId.value = r.nextInt();
-                colName.set_cropIfNotProper("SecondString");
-                colPrice.value = r.nextDouble();
-                var e = jdbt.rowSet(1, colId, colName, colPrice);
-                if (e != null) {
-                    throw new RuntimeException(e);
-                }
-                d.cr("main", "SecondString", "rowSize", jdbt.rowSize());
-            }
-
-            {
-                colId.value = r.nextInt();
-                colName.set_cropIfNotProper("ThirdString");
-                colPrice.value = r.nextDouble();
-                var e = jdbt.rowSet(2, colId, colName, colPrice);
-                if (e != null) {
-                    throw new RuntimeException(e);
-                }
-                d.cr("main", "ThirdString", "rowSize", jdbt.rowSize());
-            }
-
-            {
-                colId.value = r.nextInt();
-                var str = "nSecondStringlksdjsald jlaskdj laskjd laskdj lkasjd laskdjlaskdj laskdj salkd ";
-                colName.set_cropIfNotProper(str);
-                colPrice.value = r.nextDouble();
-                var e = jdbt.rowSet(1, colId, colName, colPrice);
-                if (e != null) {
-                    throw new RuntimeException(e);
-                }
-                d.cr("main", "nSecondString", "rowSize", jdbt.rowSize());
-            }
+            d.cr("main", "FirstString", "rowSize", jdbt.rowSize());
         }
+
+        {
+            colId.value = r.nextInt();
+            colName.set_cropIfNotProper("SecondString");
+            colPrice.value = r.nextDouble();
+            var e = jdbt.rowSet(1, colId, colName, colPrice);
+            if (e != null) {
+                throw new RuntimeException(e);
+            }
+            d.cr("main", "SecondString", "rowSize", jdbt.rowSize());
+        }
+
+        {
+            colId.value = r.nextInt();
+            colName.set_cropIfNotProper("ThirdString");
+            colPrice.value = r.nextDouble();
+            var e = jdbt.rowSet(2, colId, colName, colPrice);
+            if (e != null) {
+                throw new RuntimeException(e);
+            }
+            d.cr("main", "ThirdString", "rowSize", jdbt.rowSize());
+        }
+
+        {
+            colId.value = r.nextInt();
+            var str = "nSecondStringlksdjsald jlaskdj laskjd laskdj lkasjd laskdjlaskdj laskdj salkd ";
+            colName.set_cropIfNotProper(str);
+            colPrice.value = r.nextDouble();
+            var e = jdbt.rowSet(1, colId, colName, colPrice);
+            if (e != null) {
+                throw new RuntimeException(e);
+            }
+            d.cr("main", "nSecondString", "rowSize", jdbt.rowSize());
+        }
+
         for (int i = 0; i < 3; i++) {
             var row = jdbt.rowGet(i);
             colId = (TS_JdbTableColLng) row.get(0);
