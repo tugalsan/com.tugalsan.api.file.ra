@@ -13,14 +13,14 @@ public class TS_JdbSimpleUtils {
         return new RandomAccessFile(file, "rw");
     }
 
-    public static TGS_Optional<Double> getDoubleFromPostion(RandomAccessFile raf, int position) {
+    public static TGS_Optional<Double> getDoubleFromPostion(RandomAccessFile raf, long position) {
         return TGS_UnSafe.call(() -> {
             raf.seek(position);
             return TGS_Optional.of(raf.readDouble());
         }, e -> TGS_Optional.ofEmpty(e.getMessage()));
     }
 
-    public static TGS_Optional<Integer> setDoubleFromPostion_calcNextPosition(RandomAccessFile raf, int position, double value) {
+    public static TGS_Optional<Long> setDoubleFromPostion_calcNextPosition(RandomAccessFile raf, long position, double value) {
         return TGS_UnSafe.call(() -> {
             raf.seek(position);
             raf.writeDouble(value);
@@ -28,14 +28,14 @@ public class TS_JdbSimpleUtils {
         }, e -> TGS_Optional.ofEmpty(e.getMessage()));
     }
 
-    public static TGS_Optional<Long> getLongFromPostion(RandomAccessFile raf, int position) {
+    public static TGS_Optional<Long> getLongFromPostion(RandomAccessFile raf, long position) {
         return TGS_UnSafe.call(() -> {
             raf.seek(position);
             return TGS_Optional.of(raf.readLong());
         }, e -> TGS_Optional.ofEmpty(e.getMessage()));
     }
 
-    public static TGS_Optional<Integer> setLongFromPostion_calcNextPosition(RandomAccessFile raf, int position, long value) {
+    public static TGS_Optional<Long> setLongFromPostion_calcNextPosition(RandomAccessFile raf, long position, long value) {
         return TGS_UnSafe.call(() -> {
             raf.seek(position);
             raf.writeLong(value);
@@ -43,14 +43,14 @@ public class TS_JdbSimpleUtils {
         }, e -> TGS_Optional.ofEmpty(e.getMessage()));
     }
 
-    public static TGS_Optional<String> getStringFromPostion(RandomAccessFile raf, int position) {
+    public static TGS_Optional<String> getStringFromPostion(RandomAccessFile raf, long position) {
         return TGS_UnSafe.call(() -> {
             raf.seek(position);
             return TGS_Optional.of(raf.readUTF());
         }, e -> TGS_Optional.ofEmpty(e.getMessage()));
     }
 
-    public static TGS_Optional<Integer> setStringFromPostion_calcNextPosition(RandomAccessFile raf, int position, String value) {
+    public static TGS_Optional<Long> setStringFromPostion_calcNextPosition(RandomAccessFile raf, long position, String value) {
         return TGS_UnSafe.call(() -> {
             raf.seek(position);
             raf.writeUTF(value);

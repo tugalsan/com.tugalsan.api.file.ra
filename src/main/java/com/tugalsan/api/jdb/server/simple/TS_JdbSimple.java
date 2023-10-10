@@ -33,27 +33,27 @@ public class TS_JdbSimple {
     }
     final private Lock lock = new ReentrantLock();
 
-    public TGS_Optional<Double> getDoubleFromPostion(int position) {
+    public TGS_Optional<Double> getDoubleFromPostion(long position) {
         return call(jdb -> TS_JdbSimpleUtils.getDoubleFromPostion(jdb, position).orThrowFirstInfo());
     }
 
-    public TGS_Optional<Integer> setDoubleFromPostion_calcNextPosition(int position, double value) {
+    public TGS_Optional<Long> setDoubleFromPostion_calcNextPosition(long position, double value) {
         return call(raf -> TS_JdbSimpleUtils.setDoubleFromPostion_calcNextPosition(raf, position, value).orThrowFirstInfo());
     }
 
-    public TGS_Optional<Long> getLongFromPostion(int position) {
+    public TGS_Optional<Long> getLongFromPostion(long position) {
         return call(jdb -> TS_JdbSimpleUtils.getLongFromPostion(jdb, position).orThrowFirstInfo());
     }
 
-    public TGS_Optional<Integer> setLongFromPostion_calcNextPosition(int position, long value) {
+    public TGS_Optional<Long> setLongFromPostion_calcNextPosition(long position, long value) {
         return call(raf -> TS_JdbSimpleUtils.setLongFromPostion_calcNextPosition(raf, position, value).orThrowFirstInfo());
     }
 
-    public TGS_Optional<String> getStringFromPostion(int position) {
+    public TGS_Optional<String> getStringFromPostion(long position) {
         return call(jdb -> TS_JdbSimpleUtils.getStringFromPostion(jdb, position).orThrowFirstInfo());
     }
 
-    public TGS_Optional<Integer> setStringFromPostion_calcNextPosition(int position, String value) {
+    public TGS_Optional<Long> setStringFromPostion_calcNextPosition(long position, String value) {
         return call(raf -> TS_JdbSimpleUtils.setStringFromPostion_calcNextPosition(raf, position, value).orThrowFirstInfo());
     }
 }
