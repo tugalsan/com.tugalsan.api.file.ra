@@ -9,15 +9,19 @@ import java.util.List;
 
 public class TS_JdbTable {
 
-    private TS_JdbTable(Path path, TS_JdbTableRowConfig colConfig) {
+    private TS_JdbTable(Path path, TS_JdbTableConfig colConfig) {
         this.simple = TS_JdbSimple.of(path);
         this.colConfig = colConfig;
     }
     final private TS_JdbSimple simple;
-    final public TS_JdbTableRowConfig colConfig;
+    final public TS_JdbTableConfig colConfig;
 
-    public static TS_JdbTable of(Path path, TS_JdbTableRowConfig colConfig) {
+    public static TS_JdbTable of(Path path, TS_JdbTableConfig colConfig) {
         return new TS_JdbTable(path, colConfig);
+    }
+
+    public static TS_JdbTable of(Path path, TS_JdbTableColBase... types) {
+        return new TS_JdbTable(path, TS_JdbTableConfig.of(types));
     }
 
     public Path path() {
@@ -25,6 +29,9 @@ public class TS_JdbTable {
     }
 
     public long rowSize() {
+        if (!TS_FileUtils.isExistFile(path())) {
+            return 0L;
+        }
         var sizeInBytes_db = TS_FileUtils.getFileSizeInBytes(path());
         var sizeInBytes_row = colConfig.byteSize();
         return sizeInBytes_db / sizeInBytes_row;
@@ -59,6 +66,10 @@ public class TS_JdbTable {
             position += type.byteSize();
         }
         return lst;
+    }
+
+    public Exception rowSet(long idx, TS_JdbTableColBase... rowValues) {
+        return rowSet(idx, List.of(rowValues));
     }
 
     public Exception rowSet(long idx, List<? extends TS_JdbTableColBase> newRow) {
