@@ -12,10 +12,26 @@ public class TS_JdbTableTest {
     public static void main(String... s) {
         var dbPath = TS_PathUtils.getPathCurrent_nio(TS_JdbTableTest.class.getName() + ".jdb");
         d.cr("main", "dbPath", dbPath);
-        table(dbPath);
+        table_size(dbPath);
     }
 
-    public static void table(Path dbPath) {
+    public static void table_size(Path dbPath) {
+        var colId = TS_JdbTableColLng.of(0);
+        var colName = TS_JdbTableColStr.of(256);
+        colName.set_cropIfNotProper("Ali gel");
+        var colPrice = TS_JdbTableColDbl.of(0);
+        var jdbt = TS_JdbTable.of(dbPath, colId, colName, colPrice);
+        for (int i = 0; i < 10000; i++) {
+            var e = jdbt.rowSet(i, colId, colName, colPrice);
+            if (e != null) {
+                throw new RuntimeException(e);
+            }
+        }
+        d.cr("main", "colConfig.byteSize", jdbt.colConfig.byteSize());
+        d.cr("main", "rowSize", jdbt.rowSize());
+    }
+
+    public static void table_set_get(Path dbPath) {
         var r = new Random();
         var colId = TS_JdbTableColLng.of(0);
         var colName = TS_JdbTableColStr.of(20);
@@ -76,5 +92,6 @@ public class TS_JdbTableTest {
             colPrice = (TS_JdbTableColDbl) row.get(2);
             d.cr("main", "for", i, colId.value, colName.get(), colPrice.value);
         }
+
     }
 }
