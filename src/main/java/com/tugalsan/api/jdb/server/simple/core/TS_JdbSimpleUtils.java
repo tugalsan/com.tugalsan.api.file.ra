@@ -12,18 +12,19 @@ public class TS_JdbSimpleUtils {
         return new RandomAccessFile(file, "rw");
     }
 
-    public static TGS_Optional<String> getStringFromPostion(RandomAccessFile raf, int position) {
-        return TGS_UnSafe.call(() -> {
-            raf.seek(position);
-            return TGS_Optional.of(raf.readUTF());
-        }, e -> TGS_Optional.ofEmpty(e.getMessage()));
-    }
-
     public static TGS_Optional<Boolean> getBooleanFromPostion(RandomAccessFile raf, int position) {
         return TGS_UnSafe.call(() -> {
             raf.seek(position);
             return TGS_Optional.of(raf.readBoolean());
         }, e -> TGS_Optional.ofEmpty(e.getMessage()));
+    }
+
+    public static Exception setBooleanFromPostion(RandomAccessFile raf, int position, boolean value) {
+        return TGS_UnSafe.call(() -> {
+            raf.seek(position);
+            raf.writeBoolean(value);
+            return null;
+        }, e -> e);
     }
 
     public static TGS_Optional<Double> getDoubleFromPostion(RandomAccessFile raf, int position) {
@@ -33,10 +34,42 @@ public class TS_JdbSimpleUtils {
         }, e -> TGS_Optional.ofEmpty(e.getMessage()));
     }
 
+    public static Exception setDoubleFromPostion(RandomAccessFile raf, int position, double value) {
+        return TGS_UnSafe.call(() -> {
+            raf.seek(position);
+            raf.writeDouble(value);
+            return null;
+        }, e -> e);
+    }
+
     public static TGS_Optional<Long> getLongFromPostion(RandomAccessFile raf, int position) {
         return TGS_UnSafe.call(() -> {
             raf.seek(position);
             return TGS_Optional.of(raf.readLong());
         }, e -> TGS_Optional.ofEmpty(e.getMessage()));
     }
+
+    public static Exception setLongFromPostion(RandomAccessFile raf, int position, long value) {
+        return TGS_UnSafe.call(() -> {
+            raf.seek(position);
+            raf.writeLong(value);
+            return null;
+        }, e -> e);
+    }
+
+    public static TGS_Optional<String> getStringFromPostion(RandomAccessFile raf, int position) {
+        return TGS_UnSafe.call(() -> {
+            raf.seek(position);
+            return TGS_Optional.of(raf.readUTF());
+        }, e -> TGS_Optional.ofEmpty(e.getMessage()));
+    }
+
+    public static Exception setStringFromPostion(RandomAccessFile raf, int position, String value) {
+        return TGS_UnSafe.call(() -> {
+            raf.seek(position);
+            raf.writeUTF(value);
+            return null;
+        }, e -> e);
+    }
+
 }
