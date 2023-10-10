@@ -1,16 +1,16 @@
-package com.tugalsan.api.jdb.server.advanced;
+package com.tugalsan.api.jdb.server.indexed;
 
 import java.io.*;
 
-public class TS_JdbAdvancedWriter {
+public class TS_JdbIndexedWriter {
 
     String key;
-    TS_JdbAdvancedStream out;
+    TS_JdbIndexedStream out;
     ObjectOutputStream objOut;
 
-    public TS_JdbAdvancedWriter(String key) {
+    public TS_JdbIndexedWriter(String key) {
         this.key = key;
-        out = new TS_JdbAdvancedStream();
+        out = new TS_JdbIndexedStream();
     }
 
     public String getKey() {

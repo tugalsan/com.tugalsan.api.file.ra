@@ -1,4 +1,4 @@
-package com.tugalsan.api.jdb.server.advanced;
+package com.tugalsan.api.jdb.server.indexed;
 
 import com.tugalsan.api.file.server.TS_PathUtils;
 import com.tugalsan.api.log.server.TS_Log;
@@ -7,21 +7,21 @@ import com.tugalsan.api.unsafe.client.TGS_UnSafe;
 import static java.lang.System.out;
 import java.util.Date;
 
-public class TS_JdbAdvancedTest {
+public class TS_JdbIndexedTest {
 
-    final private static TS_Log d = TS_Log.of(false, TS_JdbAdvancedTest.class);
+    final private static TS_Log d = TS_Log.of(false, TS_JdbIndexedTest.class);
 
     public static void main(String... s) {
         TGS_UnSafe.run(() -> {
-            var dbPath = TS_PathUtils.getPathCurrent_nio(TS_JdbAdvancedTest.class.getName() + ".jdb");
-            var dbOp = TS_JdbAdvancedFile.of(dbPath);
+            var dbPath = TS_PathUtils.getPathCurrent_nio(TS_JdbIndexedTest.class.getName() + ".jdb");
+            var dbOp = TS_JdbIndexedFile.of(dbPath);
             if (dbOp.payload.isEmpty()) {
                 d.ce("main", "ERROR @ RecordsFile.of", dbOp.info);
                 return;
             }
             var db = dbOp.payload.get();
             {//load
-                var rw = new TS_JdbAdvancedWriter("foo.lastAccessTime");
+                var rw = new TS_JdbIndexedWriter("foo.lastAccessTime");
                 rw.writeObject(TGS_Time.of());
                 db.insertRecord(rw);
             }
@@ -31,7 +31,7 @@ public class TS_JdbAdvancedTest {
                 out.println("last access was at: " + time.toString());
             }
             {//write
-                var rw = new TS_JdbAdvancedWriter("foo.lastAccessTime");
+                var rw = new TS_JdbIndexedWriter("foo.lastAccessTime");
                 rw.writeObject(new Date());
                 db.updateRecord(rw);
             }

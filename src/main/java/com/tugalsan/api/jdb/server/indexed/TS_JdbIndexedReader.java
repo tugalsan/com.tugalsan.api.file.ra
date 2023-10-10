@@ -1,15 +1,15 @@
-package com.tugalsan.api.jdb.server.advanced;
+package com.tugalsan.api.jdb.server.indexed;
 
 import java.io.*;
 
-public class TS_JdbAdvancedReader {
+public class TS_JdbIndexedReader {
 
     String key;
     byte[] data;
     ByteArrayInputStream in;
     ObjectInputStream objIn;
 
-    public TS_JdbAdvancedReader(String key, byte[] data) {
+    public TS_JdbIndexedReader(String key, byte[] data) {
         this.key = key;
         this.data = data;
         in = new ByteArrayInputStream(data);
