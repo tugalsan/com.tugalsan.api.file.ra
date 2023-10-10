@@ -96,8 +96,9 @@ public class TS_JdbTable {
                 } else if (type instanceof TS_JdbTableColLng) {
                     position = simple.setLongFromPostion_calcNextPosition(position, ((TS_JdbTableColLng) value).value).orThrowFirstInfo();
                     d.ce("rowSet", "i", i, "pos", position);
-                } else if (type instanceof TS_JdbTableColStr) {
-                    position = simple.setStringFromPostion_calcNextPosition(position, ((TS_JdbTableColStr) value).get()).orThrowFirstInfo();
+                } else if (type instanceof TS_JdbTableColStr typeStr) {
+                    simple.setStringFromPostion_calcNextPosition(position, ((TS_JdbTableColStr) value).get()).orThrowFirstInfo();
+                    position += typeStr.byteSize();
                     d.ce("rowSet", "i", i, "pos", position);
                 } else {
                     throw new RuntimeException("ERROR @ TS_JdbList.rowGet: unkwon col type");

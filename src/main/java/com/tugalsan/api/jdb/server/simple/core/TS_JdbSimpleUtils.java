@@ -35,7 +35,7 @@ public class TS_JdbSimpleUtils {
         return TGS_UnSafe.call(() -> {
             raf.seek(position);
             return TGS_Optional.of(raf.readLong());
-       }, e -> TGS_Optional.ofEmpty(e.getClass().getSimpleName() + ":" + e.getMessage()));
+        }, e -> TGS_Optional.ofEmpty(e.getClass().getSimpleName() + ":" + e.getMessage()));
     }
 
     public static TGS_Optional<Long> setLongFromPostion_calcNextPosition(RandomAccessFile raf, long position, long value) {
@@ -60,6 +60,6 @@ public class TS_JdbSimpleUtils {
             raf.seek(position);
             raf.writeUTF(value);
             return TGS_Optional.of(position + TGS_ByteLengthUtils.typeStringUTF16(value));
-       }, e -> TGS_Optional.ofEmpty(e.getClass().getSimpleName() + ":" + e.getMessage()));
+        }, e -> TGS_Optional.ofEmpty(e.getClass().getSimpleName() + ":" + e.getMessage()));
     }
 }
