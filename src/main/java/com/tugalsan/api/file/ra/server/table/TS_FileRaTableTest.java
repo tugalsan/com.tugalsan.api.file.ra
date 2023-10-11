@@ -56,7 +56,7 @@ public class TS_FileRaTableTest {
 
         {
             var e = jdbt.rowSet(
-                    0,
+                    1,
                     template0Id.toValue(r.nextInt()),
                     template1Name.toValue_cropIfNotProper("SecondString"),
                     template2Price.toValue(r.nextDouble())
@@ -69,7 +69,7 @@ public class TS_FileRaTableTest {
 
         {
             var e = jdbt.rowSet(
-                    0,
+                    2,
                     template0Id.toValue(r.nextInt()),
                     template1Name.toValue_cropIfNotProper("ThirdString"),
                     template2Price.toValue(r.nextDouble())
@@ -82,7 +82,7 @@ public class TS_FileRaTableTest {
 
         {
             var e = jdbt.rowSet(
-                    0,
+                    1,
                     template0Id.toValue(r.nextInt()),
                     template1Name.toValue_cropIfNotProper("nSecondStringlksdjsald jlaskdj laskjd laskdj lkasjd laskdjlaskdj laskdj salkd "),
                     template2Price.toValue(r.nextDouble())
