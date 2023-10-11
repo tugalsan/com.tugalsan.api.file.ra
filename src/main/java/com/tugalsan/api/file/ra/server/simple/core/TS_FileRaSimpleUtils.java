@@ -1,4 +1,4 @@
-package com.tugalsan.api.jdb.server.simple.core;
+package com.tugalsan.api.file.ra.server.simple.core;
 
 import com.tugalsan.api.bytes.client.TGS_ByteLengthUtils;
 import com.tugalsan.api.log.server.TS_Log;
@@ -8,9 +8,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.RandomAccessFile;
 
-public class TS_JdbSimpleUtils {
+public class TS_FileRaSimpleUtils {
 
-    final private static TS_Log d = TS_Log.of(false, TS_JdbSimpleUtils.class);
+    final private static TS_Log d = TS_Log.of(false, TS_FileRaSimpleUtils.class);
 
     public static RandomAccessFile create(File file) throws FileNotFoundException {
         return new RandomAccessFile(file, "rw");

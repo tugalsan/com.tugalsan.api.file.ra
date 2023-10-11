@@ -1,4 +1,4 @@
-module com.tugalsan.api.jdb {
+module com.tugalsan.api.file.ra {
     requires com.tugalsan.api.bytes;
     requires com.tugalsan.api.time;
     requires com.tugalsan.api.file;
@@ -7,7 +7,7 @@ module com.tugalsan.api.jdb {
     requires com.tugalsan.api.log;
     requires com.tugalsan.api.callable;
     requires com.tugalsan.api.runnable;
-    exports com.tugalsan.api.jdb.server.indexed;
-    exports com.tugalsan.api.jdb.server.simple;
-    exports com.tugalsan.api.jdb.server.table;
+    exports com.tugalsan.api.file.ra.server.indexed;
+    exports com.tugalsan.api.file.ra.server.simple;
+    exports com.tugalsan.api.file.ra.server.table;
 }

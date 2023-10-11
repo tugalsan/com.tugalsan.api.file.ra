@@ -1,30 +1,30 @@
-package com.tugalsan.api.jdb.server.table;
+package com.tugalsan.api.file.ra.server.table;
 
 import com.tugalsan.api.file.server.TS_FileUtils;
-import com.tugalsan.api.jdb.server.simple.TS_JdbSimple;
+import com.tugalsan.api.file.ra.server.simple.TS_FileRaSimple;
 import com.tugalsan.api.log.server.TS_Log;
 import com.tugalsan.api.unsafe.client.TGS_UnSafe;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TS_JdbTable {
+public class TS_FileRaTable {
 
-    final private static TS_Log d = TS_Log.of(false, TS_JdbTable.class);
+    final private static TS_Log d = TS_Log.of(false, TS_FileRaTable.class);
 
-    private TS_JdbTable(Path path, TS_JdbTableConfig colConfig) {
-        this.simple = TS_JdbSimple.of(path);
+    private TS_FileRaTable(Path path, TS_FileRaTableConfig colConfig) {
+        this.simple = TS_FileRaSimple.of(path);
         this.colConfig = colConfig;
     }
-    final private TS_JdbSimple simple;
-    final public TS_JdbTableConfig colConfig;
+    final private TS_FileRaSimple simple;
+    final public TS_FileRaTableConfig colConfig;
 
-    public static TS_JdbTable of(Path path, TS_JdbTableConfig colConfig) {
-        return new TS_JdbTable(path, colConfig);
+    public static TS_FileRaTable of(Path path, TS_FileRaTableConfig colConfig) {
+        return new TS_FileRaTable(path, colConfig);
     }
 
-    public static TS_JdbTable of(Path path, TS_JdbTableColBase... types) {
-        return new TS_JdbTable(path, TS_JdbTableConfig.of(types));
+    public static TS_FileRaTable of(Path path, TS_FileRaTableColBase... types) {
+        return new TS_FileRaTable(path, TS_FileRaTableConfig.of(types));
     }
 
     public Path path() {
@@ -46,58 +46,58 @@ public class TS_JdbTable {
         return pos;
     }
 
-    public List<TS_JdbTableColBase> rowGet(long idx) {
-        List<TS_JdbTableColBase> lst = new ArrayList();
+    public List<TS_FileRaTableColBase> rowGet(long idx) {
+        List<TS_FileRaTableColBase> lst = new ArrayList();
         var position = position(idx);
         for (var i = 0; i < colConfig.types.size(); i++) {
             var type = colConfig.types.get(i);
-            if (type instanceof TS_JdbTableColDbl) {
+            if (type instanceof TS_FileRaTableColDbl) {
                 var val = simple.getDoubleFromPostion(position).orThrowFirstInfo();
-                var value = TS_JdbTableColDbl.of(val);
+                var value = TS_FileRaTableColDbl.of(val);
                 lst.add(value);
                 position += value.byteSize();
                 d.ci("rowGet", "i", i, "pos", position);
-            } else if (type instanceof TS_JdbTableColLng) {
+            } else if (type instanceof TS_FileRaTableColLng) {
                 var val = simple.getLongFromPostion(position).orThrowFirstInfo();
-                var value = TS_JdbTableColLng.of(val);
+                var value = TS_FileRaTableColLng.of(val);
                 lst.add(value);
                 position += value.byteSize();
                 d.ci("rowGet", "i", i, "pos", position);
-            } else if (type instanceof TS_JdbTableColStr typeStr) {
+            } else if (type instanceof TS_FileRaTableColStr typeStr) {
                 var valOp = simple.getStringFromPostion(position);
                 d.ci("valOp", valOp);
                 var val = valOp.orThrowFirstInfo();
-                var valueStr = TS_JdbTableColStr.of(typeStr.byteSize());
+                var valueStr = TS_FileRaTableColStr.of(typeStr.byteSize());
                 valueStr.set(val);
                 var value = valueStr;
                 lst.add(value);
                 position += value.byteSize();
                 d.ci("rowGet", "i", i, "pos", position);
-            } else if (type instanceof TS_JdbTableColStr) {
+            } else if (type instanceof TS_FileRaTableColStr) {
                 throw new RuntimeException("ERROR @ TS_JdbList.rowGet: unkwon col type");
             }
         }
         return lst;
     }
 
-    public Exception rowSet(long idx, TS_JdbTableColBase... rowValues) {
+    public Exception rowSet(long idx, TS_FileRaTableColBase... rowValues) {
         return rowSet(idx, List.of(rowValues));
     }
 
-    public Exception rowSet(long idx, List<? extends TS_JdbTableColBase> newRow) {
+    public Exception rowSet(long idx, List<? extends TS_FileRaTableColBase> newRow) {
         return TGS_UnSafe.call(() -> {
             var position = position(idx);
             for (var i = 0; i < colConfig.types.size(); i++) {
                 var type = colConfig.types.get(i);
                 Object value = newRow.get(i);
-                if (type instanceof TS_JdbTableColDbl) {
-                    position = simple.setDoubleFromPostion_calcNextPosition(position, ((TS_JdbTableColDbl) value).value).orThrowFirstInfo();
+                if (type instanceof TS_FileRaTableColDbl) {
+                    position = simple.setDoubleFromPostion_calcNextPosition(position, ((TS_FileRaTableColDbl) value).value).orThrowFirstInfo();
                     d.ci("rowSet", "i", i, "pos", position);
-                } else if (type instanceof TS_JdbTableColLng) {
-                    position = simple.setLongFromPostion_calcNextPosition(position, ((TS_JdbTableColLng) value).value).orThrowFirstInfo();
+                } else if (type instanceof TS_FileRaTableColLng) {
+                    position = simple.setLongFromPostion_calcNextPosition(position, ((TS_FileRaTableColLng) value).value).orThrowFirstInfo();
                     d.ci("rowSet", "i", i, "pos", position);
-                } else if (type instanceof TS_JdbTableColStr typeStr) {
-                    simple.setStringFromPostion_calcNextPosition(position, ((TS_JdbTableColStr) value).get()).orThrowFirstInfo();
+                } else if (type instanceof TS_FileRaTableColStr typeStr) {
+                    simple.setStringFromPostion_calcNextPosition(position, ((TS_FileRaTableColStr) value).get()).orThrowFirstInfo();
                     position += typeStr.byteSize();
                     d.ci("rowSet", "i", i, "pos", position);
                 } else {

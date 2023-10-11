@@ -1,4 +1,4 @@
-package com.tugalsan.api.jdb.server.indexed;
+package com.tugalsan.api.file.ra.server.indexed;
 
 import com.tugalsan.api.file.server.TS_FileUtils;
 import com.tugalsan.api.optional.client.TGS_Optional;
@@ -7,7 +7,7 @@ import java.io.*;
 import java.nio.file.Path;
 import java.util.*;
 
-public class TS_JdbIndexedFile extends TS_JdbIndexedBase {
+public class TS_FileRaIndexedFile extends TS_FileRaIndexedBase {
 
     /**
      * Hashtable which holds the in-memory index. For efficiency, the entire
@@ -16,8 +16,8 @@ public class TS_JdbIndexedFile extends TS_JdbIndexedBase {
      */
     protected Hashtable memIndex;
 
-    public static TGS_Optional<TS_JdbIndexedFile> of(Path dbPath) {
-        return TGS_UnSafe.call(() -> TS_FileUtils.isExistFile(dbPath) ? TGS_Optional.of(new TS_JdbIndexedFile(dbPath, "rw")) : TGS_Optional.of(new TS_JdbIndexedFile(dbPath, 64)), e -> TGS_Optional.ofEmpty(e.getClass().getSimpleName() + ":" + e.getMessage()));
+    public static TGS_Optional<TS_FileRaIndexedFile> of(Path dbPath) {
+        return TGS_UnSafe.call(() -> TS_FileUtils.isExistFile(dbPath) ? TGS_Optional.of(new TS_FileRaIndexedFile(dbPath, "rw")) : TGS_Optional.of(new TS_FileRaIndexedFile(dbPath, 64)), e -> TGS_Optional.ofEmpty(e.getClass().getSimpleName() + ":" + e.getMessage()));
     }
 
     /**
@@ -25,7 +25,7 @@ public class TS_JdbIndexedFile extends TS_JdbIndexedBase {
      * amount of space which is allocated for the index. The index can grow
      * dynamically, but the parameter is provide to increase efficiency.
      */
-    private TS_JdbIndexedFile(Path dbPath, int initialSize) throws IOException, TS_JdbIndexedException {
+    private TS_FileRaIndexedFile(Path dbPath, int initialSize) throws IOException, TS_FileRaIndexedException {
         super(dbPath, initialSize);
         memIndex = new Hashtable(initialSize);
     }
@@ -33,13 +33,13 @@ public class TS_JdbIndexedFile extends TS_JdbIndexedBase {
     /**
      * Opens an existing database and initializes the in-memory index.
      */
-    private TS_JdbIndexedFile(Path dbPath, String accessFlags) throws IOException, TS_JdbIndexedException {
+    private TS_FileRaIndexedFile(Path dbPath, String accessFlags) throws IOException, TS_FileRaIndexedException {
         super(dbPath, accessFlags);
         var numRecords = readNumRecordsHeader();
         memIndex = new Hashtable(numRecords);
         for (int i = 0; i < numRecords; i++) {
             String key = readKeyFromIndex(i);
-            TS_JdbIndexedHeader header = readRecordHeaderFromIndex(i);
+            TS_FileRaIndexedHeader header = readRecordHeaderFromIndex(i);
             header.setIndexPosition(i);
             memIndex.put(key, header);
         }
@@ -69,10 +69,10 @@ public class TS_JdbIndexedFile extends TS_JdbIndexedBase {
     /**
      * Maps a key to a record header by looking it up in the in-memory index.
      */
-    protected TS_JdbIndexedHeader keyToRecordHeader(String key) throws TS_JdbIndexedException {
-        var h = (TS_JdbIndexedHeader) memIndex.get(key);
+    protected TS_FileRaIndexedHeader keyToRecordHeader(String key) throws TS_FileRaIndexedException {
+        var h = (TS_FileRaIndexedHeader) memIndex.get(key);
         if (h == null) {
-            throw new TS_JdbIndexedException("Key not found: " + key);
+            throw new TS_FileRaIndexedException("Key not found: " + key);
         }
         return h;
     }
@@ -81,12 +81,12 @@ public class TS_JdbIndexedFile extends TS_JdbIndexedBase {
      * This method searches the file for free space and then returns a
      * RecordHeader which uses the space. (O(n) memory accesses)
      */
-    protected TS_JdbIndexedHeader allocateRecord(String key, int dataLength) throws TS_JdbIndexedException, IOException {
+    protected TS_FileRaIndexedHeader allocateRecord(String key, int dataLength) throws TS_FileRaIndexedException, IOException {
         // search for empty space
-        TS_JdbIndexedHeader newRecord = null;
+        TS_FileRaIndexedHeader newRecord = null;
         var e = memIndex.elements();
         while (e.hasMoreElements()) {
-            var next = (TS_JdbIndexedHeader) e.nextElement();
+            var next = (TS_FileRaIndexedHeader) e.nextElement();
 //            var free = next.getFreeSpace();
             if (dataLength <= next.getFreeSpace()) {
                 newRecord = next.split();
@@ -98,7 +98,7 @@ public class TS_JdbIndexedFile extends TS_JdbIndexedBase {
             // append record to end of file - grows file to allocate space
             var fp = getFileLength();
             setFileLength(fp + dataLength);
-            newRecord = new TS_JdbIndexedHeader(fp, dataLength);
+            newRecord = new TS_FileRaIndexedHeader(fp, dataLength);
         }
         return newRecord;
     }
@@ -109,10 +109,10 @@ public class TS_JdbIndexedFile extends TS_JdbIndexedBase {
      * RecordHeader which is returned. Returns null if the location is not part
      * of a record. (O(n) mem accesses)
      */
-    protected TS_JdbIndexedHeader getRecordAt(long targetFp) throws TS_JdbIndexedException {
+    protected TS_FileRaIndexedHeader getRecordAt(long targetFp) throws TS_FileRaIndexedException {
         var e = memIndex.elements();
         while (e.hasMoreElements()) {
-            var next = (TS_JdbIndexedHeader) e.nextElement();
+            var next = (TS_FileRaIndexedHeader) e.nextElement();
             if (targetFp >= next.dataPointer
                     && targetFp < next.dataPointer + (long) next.dataCapacity) {
                 return next;
@@ -124,7 +124,7 @@ public class TS_JdbIndexedFile extends TS_JdbIndexedBase {
     /**
      * Closes the database.
      */
-    public synchronized void close() throws IOException, TS_JdbIndexedException {
+    public synchronized void close() throws IOException, TS_FileRaIndexedException {
         try {
             super.close();
         } finally {
@@ -137,7 +137,7 @@ public class TS_JdbIndexedFile extends TS_JdbIndexedBase {
      * Adds the new record to the in-memory index and calls the super class add
      * the index entry to the file.
      */
-    protected void addEntryToIndex(String key, TS_JdbIndexedHeader newRecord, int currentNumRecords) throws IOException, TS_JdbIndexedException {
+    protected void addEntryToIndex(String key, TS_FileRaIndexedHeader newRecord, int currentNumRecords) throws IOException, TS_FileRaIndexedException {
         super.addEntryToIndex(key, newRecord, currentNumRecords);
         memIndex.put(key, newRecord);
     }
@@ -146,8 +146,8 @@ public class TS_JdbIndexedFile extends TS_JdbIndexedBase {
      * Removes the record from the index. Replaces the target with the entry at
      * the end of the index.
      */
-    protected void deleteEntryFromIndex(String key, TS_JdbIndexedHeader header, int currentNumRecords) throws IOException, TS_JdbIndexedException {
+    protected void deleteEntryFromIndex(String key, TS_FileRaIndexedHeader header, int currentNumRecords) throws IOException, TS_FileRaIndexedException {
         super.deleteEntryFromIndex(key, header, currentNumRecords);
-        var deleted = (TS_JdbIndexedHeader) memIndex.remove(key);
+        var deleted = (TS_FileRaIndexedHeader) memIndex.remove(key);
     }
 }

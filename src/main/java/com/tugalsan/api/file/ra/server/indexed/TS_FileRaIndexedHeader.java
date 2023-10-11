@@ -1,8 +1,8 @@
-package com.tugalsan.api.jdb.server.indexed;
+package com.tugalsan.api.file.ra.server.indexed;
 
 import java.io.*;
 
-public class TS_JdbIndexedHeader {
+public class TS_FileRaIndexedHeader {
 
     /**
      * File pointer to the first byte of record data (8 bytes).
@@ -21,10 +21,10 @@ public class TS_JdbIndexedHeader {
      */
     protected int indexPosition;
 
-    protected TS_JdbIndexedHeader() {
+    protected TS_FileRaIndexedHeader() {
     }
 
-    protected TS_JdbIndexedHeader(long dataPointer, int dataCapacity) {
+    protected TS_FileRaIndexedHeader(long dataPointer, int dataCapacity) {
         if (dataCapacity < 1) {
             throw new IllegalArgumentException("Bad record size: " + dataCapacity);
         }
@@ -61,8 +61,8 @@ public class TS_JdbIndexedHeader {
         out.writeInt(dataCount);
     }
 
-    protected static TS_JdbIndexedHeader readHeader(DataInput in) throws IOException {
-        var r = new TS_JdbIndexedHeader();
+    protected static TS_FileRaIndexedHeader readHeader(DataInput in) throws IOException {
+        var r = new TS_FileRaIndexedHeader();
         r.read(in);
         return r;
     }
@@ -71,9 +71,9 @@ public class TS_JdbIndexedHeader {
      * Returns a new record header which occupies the free space of this record.
      * Shrinks this record size by the size of its free space.
      */
-    protected TS_JdbIndexedHeader split() throws TS_JdbIndexedException {
+    protected TS_FileRaIndexedHeader split() throws TS_FileRaIndexedException {
         var newFp = dataPointer + (long) dataCount;
-        var newRecord = new TS_JdbIndexedHeader(newFp, getFreeSpace());
+        var newRecord = new TS_FileRaIndexedHeader(newFp, getFreeSpace());
         dataCapacity = dataCount;
         return newRecord;
     }

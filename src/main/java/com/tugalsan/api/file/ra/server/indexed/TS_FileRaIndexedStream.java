@@ -1,4 +1,4 @@
-package com.tugalsan.api.jdb.server.indexed;
+package com.tugalsan.api.file.ra.server.indexed;
 
 import java.io.*;
 
@@ -6,13 +6,13 @@ import java.io.*;
  * Extends ByteArrayOutputStream to provide a way of writing the buffer to a
  * DataOutput without re-allocating it.
  */
-public class TS_JdbIndexedStream extends ByteArrayOutputStream {
+public class TS_FileRaIndexedStream extends ByteArrayOutputStream {
 
-    public TS_JdbIndexedStream() {
+    public TS_FileRaIndexedStream() {
         super();
     }
 
-    public TS_JdbIndexedStream(int size) {
+    public TS_FileRaIndexedStream(int size) {
         super(size);
     }
 

@@ -1,15 +1,15 @@
-package com.tugalsan.api.jdb.server.indexed;
+package com.tugalsan.api.file.ra.server.indexed;
 
 import java.io.*;
 
-public class TS_JdbIndexedReader {
+public class TS_FileRaIndexedReader {
 
     String key;
     byte[] data;
     ByteArrayInputStream in;
     ObjectInputStream objIn;
 
-    public TS_JdbIndexedReader(String key, byte[] data) {
+    public TS_FileRaIndexedReader(String key, byte[] data) {
         this.key = key;
         this.data = data;
         in = new ByteArrayInputStream(data);

@@ -1,21 +1,21 @@
-package com.tugalsan.api.jdb.server.table;
+package com.tugalsan.api.file.ra.server.table;
 
 import com.tugalsan.api.bytes.client.TGS_ByteLengthUtils;
 
-public class TS_JdbTableColStr extends TS_JdbTableColBase {
+public class TS_FileRaTableColStr extends TS_FileRaTableColBase {
 
     @Override
     public int byteSize() {
         return byteSize;
     }
 
-    public TS_JdbTableColStr(int byteSize) {
+    public TS_FileRaTableColStr(int byteSize) {
         this.byteSize = byteSize;
     }
     final private int byteSize;
 
-    public static TS_JdbTableColStr of(int byteSize) {
-        return new TS_JdbTableColStr(byteSize);
+    public static TS_FileRaTableColStr of(int byteSize) {
+        return new TS_FileRaTableColStr(byteSize);
     }
 
     private volatile String value = "";

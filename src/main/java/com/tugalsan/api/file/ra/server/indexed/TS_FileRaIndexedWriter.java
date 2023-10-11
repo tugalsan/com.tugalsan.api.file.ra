@@ -1,16 +1,16 @@
-package com.tugalsan.api.jdb.server.indexed;
+package com.tugalsan.api.file.ra.server.indexed;
 
 import java.io.*;
 
-public class TS_JdbIndexedWriter {
+public class TS_FileRaIndexedWriter {
 
     String key;
-    TS_JdbIndexedStream out;
+    TS_FileRaIndexedStream out;
     ObjectOutputStream objOut;
 
-    public TS_JdbIndexedWriter(String key) {
+    public TS_FileRaIndexedWriter(String key) {
         this.key = key;
-        out = new TS_JdbIndexedStream();
+        out = new TS_FileRaIndexedStream();
     }
 
     public String getKey() {
