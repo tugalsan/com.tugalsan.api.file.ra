@@ -7,6 +7,7 @@ import com.tugalsan.api.unsafe.client.TGS_UnSafe;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class TS_FileRaTable {
 
@@ -23,7 +24,7 @@ public class TS_FileRaTable {
         return new TS_FileRaTable(path, colConfig);
     }
 
-    public static TS_FileRaTable of(Path path, TS_FileRaTableColBase... types) {
+    public static TS_FileRaTable of(Path path, TS_FileRaTableCellBase... types) {
         return new TS_FileRaTable(path, TS_FileRaTableConfig.of(types));
     }
 
@@ -46,59 +47,62 @@ public class TS_FileRaTable {
         return pos;
     }
 
-    public List<TS_FileRaTableColBase> rowGet(long idx) {
-        List<TS_FileRaTableColBase> lst = new ArrayList();
+    public List<TS_FileRaTableCellBase> rowGet(long idx) {
+        List<TS_FileRaTableCellBase> lst = new ArrayList();
         var position = position(idx);
-        for (var i = 0; i < colConfig.types.size(); i++) {
-            var type = colConfig.types.get(i);
-            if (type instanceof TS_FileRaTableColDbl) {
-                var val = simple.getDoubleFromPostion(position).orThrowFirstInfo();
-                var value = TS_FileRaTableColDbl.of(val);
-                lst.add(value);
-                position += value.byteSize();
+        for (var i = 0; i < colConfig.emptyRow.size(); i++) {
+            var colConfig_emptyRowI = colConfig.emptyRow.get(i);
+            if (colConfig_emptyRowI instanceof TS_FileRaTableCellDbl) {
+                var value = simple.getDoubleFromPostion(position).orThrowFirstInfo();
+                var rowCell = TS_FileRaTableCellDbl.ofEmpty().set(value);
+                lst.add(rowCell);
+                position += rowCell.byteSize();
                 d.ci("rowGet", "i", i, "pos", position);
-            } else if (type instanceof TS_FileRaTableColLng) {
-                var val = simple.getLongFromPostion(position).orThrowFirstInfo();
-                var value = TS_FileRaTableColLng.of(val);
-                lst.add(value);
-                position += value.byteSize();
+            } else if (colConfig_emptyRowI instanceof TS_FileRaTableCellLng) {
+                var value = simple.getLongFromPostion(position).orThrowFirstInfo();
+                var rowCell = TS_FileRaTableCellLng.ofEmpty().set(value);
+                lst.add(rowCell);
+                position += rowCell.byteSize();
                 d.ci("rowGet", "i", i, "pos", position);
-            } else if (type instanceof TS_FileRaTableColStr typeStr) {
-                var valOp = simple.getStringFromPostion(position);
-                d.ci("valOp", valOp);
-                var val = valOp.orThrowFirstInfo();
-                var valueStr = TS_FileRaTableColStr.of(typeStr.byteSize());
-                valueStr.set(val);
-                var value = valueStr;
-                lst.add(value);
-                position += value.byteSize();
+            } else if (colConfig_emptyRowI instanceof TS_FileRaTableCellStr typeStr) {
+                var value = simple.getStringFromPostion(position).orThrowFirstInfo();
+                var rowCell = TS_FileRaTableCellStr.ofEmpty(typeStr.byteSize()).set_cropIfNotProper(value);
+                lst.add(rowCell);
+                position += rowCell.byteSize();
                 d.ci("rowGet", "i", i, "pos", position);
-            } else if (type instanceof TS_FileRaTableColStr) {
+            } else if (colConfig_emptyRowI instanceof TS_FileRaTableCellStr) {
                 throw new RuntimeException("ERROR @ TS_JdbList.rowGet: unkwon col type");
             }
         }
         return lst;
     }
 
-    public Exception rowSet(long idx, TS_FileRaTableColBase... rowValues) {
+    public Exception rowSet(long idx, TS_FileRaTableCellBase... rowValues) {
         return rowSet(idx, List.of(rowValues));
     }
 
-    public Exception rowSet(long idx, List<? extends TS_FileRaTableColBase> newRow) {
+    public Exception rowSet(long idx, List<? extends TS_FileRaTableCellBase> newRow) {
         return TGS_UnSafe.call(() -> {
             var position = position(idx);
-            for (var i = 0; i < colConfig.types.size(); i++) {
-                var type = colConfig.types.get(i);
-                Object value = newRow.get(i);
-                if (type instanceof TS_FileRaTableColDbl) {
-                    position = simple.setDoubleFromPostion_calcNextPosition(position, ((TS_FileRaTableColDbl) value).value).orThrowFirstInfo();
+            for (var i = 0; i < colConfig.emptyRow.size(); i++) {
+                var colConfig_emptyRowI = colConfig.emptyRow.get(i);
+                var newRowValueI = newRow.get(i);
+                if (!Objects.equals(newRowValueI.getClass(), colConfig_emptyRowI.getClass())) {
+                    throw new RuntimeException("ERROR @ TS_JdbList.rowGet: !Objects.equals(newRowValueI.getClass(), colConfig_emptyRowI.getClass())");
+                }
+                if (newRowValueI instanceof TS_FileRaTableCellDbl newRowCell) {
+                    position = simple.setDoubleFromPostion_calcNextPosition(position, newRowCell.get()).orThrowFirstInfo();
                     d.ci("rowSet", "i", i, "pos", position);
-                } else if (type instanceof TS_FileRaTableColLng) {
-                    position = simple.setLongFromPostion_calcNextPosition(position, ((TS_FileRaTableColLng) value).value).orThrowFirstInfo();
+                } else if (newRowValueI instanceof TS_FileRaTableCellLng newRowCell) {
+                    position = simple.setLongFromPostion_calcNextPosition(position, newRowCell.get()).orThrowFirstInfo();
                     d.ci("rowSet", "i", i, "pos", position);
-                } else if (type instanceof TS_FileRaTableColStr typeStr) {
-                    simple.setStringFromPostion_calcNextPosition(position, ((TS_FileRaTableColStr) value).get()).orThrowFirstInfo();
-                    position += typeStr.byteSize();
+                } else if (newRowValueI instanceof TS_FileRaTableCellStr newRowCell) {
+                    var emptyValue = (TS_FileRaTableCellStr) colConfig_emptyRowI;
+                    if (emptyValue.byteSize() != newRowCell.byteSize()) {
+                        throw new RuntimeException("ERROR @ TS_JdbList.rowGet: emptyValue.byteSize() != newRowCell.byteSize()");
+                    }
+                    simple.setStringFromPostion_calcNextPosition(position, newRowCell.get()).orThrowFirstInfo();
+                    position += newRowCell.byteSize();
                     d.ci("rowSet", "i", i, "pos", position);
                 } else {
                     throw new RuntimeException("ERROR @ TS_JdbList.rowGet: unkwon col type");

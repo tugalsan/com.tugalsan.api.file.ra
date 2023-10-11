@@ -16,12 +16,12 @@ public class TS_FileRaTableTest {
     }
 
     public static void table_size(Path dbPath) {
-        var colId = TS_FileRaTableColLng.of(0);
-        var colName = TS_FileRaTableColStr.of(256);
-        colName.set_cropIfNotProper("Ali gel");
-        var colPrice = TS_FileRaTableColDbl.of(0);
+        var colId = TS_FileRaTableCellLng.ofEmpty();
+        var colName = TS_FileRaTableCellStr.ofEmpty(256);
+        var colPrice = TS_FileRaTableCellDbl.ofEmpty();
         var jdbt = TS_FileRaTable.of(dbPath, colId, colName, colPrice);
-        for (int i = 0; i < 10000; i++) {
+        colName.set_cropIfNotProper("Ali gel");
+        for (var i = 0; i < 10000; i++) {
             var e = jdbt.rowSet(i, colId, colName, colPrice);
             if (e != null) {
                 throw new RuntimeException(e);
@@ -33,17 +33,17 @@ public class TS_FileRaTableTest {
 
     public static void table_set_get(Path dbPath) {
         var r = new Random();
-        var colId = TS_FileRaTableColLng.of(0);
-        var colName = TS_FileRaTableColStr.of(20);
-        var colPrice = TS_FileRaTableColDbl.of(0);
+        var colId = TS_FileRaTableCellLng.ofEmpty();
+        var colName = TS_FileRaTableCellStr.ofEmpty(20);
+        var colPrice = TS_FileRaTableCellDbl.ofEmpty();
 
         var jdbt = TS_FileRaTable.of(dbPath, colId, colName, colPrice);
         d.cr("main", "rowSize", jdbt.rowSize());
 
         {
-            colId.value = r.nextInt();
+            colId.set(r.nextInt());
             colName.set_cropIfNotProper("FirstString");
-            colPrice.value = r.nextDouble();
+            colPrice.set(r.nextDouble());
             var e = jdbt.rowSet(0, colId, colName, colPrice);
             if (e != null) {
                 throw new RuntimeException(e);
@@ -52,9 +52,9 @@ public class TS_FileRaTableTest {
         }
 
         {
-            colId.value = r.nextInt();
+            colId.set(r.nextInt());
             colName.set_cropIfNotProper("SecondString");
-            colPrice.value = r.nextDouble();
+            colPrice.set(r.nextDouble());
             var e = jdbt.rowSet(1, colId, colName, colPrice);
             if (e != null) {
                 throw new RuntimeException(e);
@@ -63,9 +63,9 @@ public class TS_FileRaTableTest {
         }
 
         {
-            colId.value = r.nextInt();
+            colId.set(r.nextInt());
             colName.set_cropIfNotProper("ThirdString");
-            colPrice.value = r.nextDouble();
+            colPrice.set(r.nextDouble());
             var e = jdbt.rowSet(2, colId, colName, colPrice);
             if (e != null) {
                 throw new RuntimeException(e);
@@ -74,10 +74,10 @@ public class TS_FileRaTableTest {
         }
 
         {
-            colId.value = r.nextInt();
+            colId.set(r.nextInt());
             var str = "nSecondStringlksdjsald jlaskdj laskjd laskdj lkasjd laskdjlaskdj laskdj salkd ";
             colName.set_cropIfNotProper(str);
-            colPrice.value = r.nextDouble();
+            colPrice.set(r.nextDouble());
             var e = jdbt.rowSet(1, colId, colName, colPrice);
             if (e != null) {
                 throw new RuntimeException(e);
@@ -87,10 +87,10 @@ public class TS_FileRaTableTest {
 
         for (int i = 0; i < 3; i++) {
             var row = jdbt.rowGet(i);
-            colId = (TS_FileRaTableColLng) row.get(0);
-            colName = (TS_FileRaTableColStr) row.get(1);
-            colPrice = (TS_FileRaTableColDbl) row.get(2);
-            d.cr("main", "for", i, colId.value, colName.get(), colPrice.value);
+            colId = (TS_FileRaTableCellLng) row.get(0);
+            colName = (TS_FileRaTableCellStr) row.get(1);
+            colPrice = (TS_FileRaTableCellDbl) row.get(2);
+            d.cr("main", "for", i, colId.get(), colName.get(), colPrice.get());
         }
 
     }

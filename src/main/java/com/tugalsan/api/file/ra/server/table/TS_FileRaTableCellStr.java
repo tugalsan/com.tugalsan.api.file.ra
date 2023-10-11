@@ -2,42 +2,34 @@ package com.tugalsan.api.file.ra.server.table;
 
 import com.tugalsan.api.bytes.client.TGS_ByteLengthUtils;
 
-public class TS_FileRaTableColStr extends TS_FileRaTableColBase {
+public class TS_FileRaTableCellStr extends TS_FileRaTableCellBase {
 
     @Override
     public int byteSize() {
         return byteSize;
     }
 
-    public TS_FileRaTableColStr(int byteSize) {
+    public TS_FileRaTableCellStr(int byteSize, String value) {
         this.byteSize = byteSize;
+        this.value = value;
     }
     final private int byteSize;
+    private volatile String value;
 
-    public static TS_FileRaTableColStr of(int byteSize) {
-        return new TS_FileRaTableColStr(byteSize);
+    public static TS_FileRaTableCellStr ofEmpty(int byteSize) {
+        return new TS_FileRaTableCellStr(byteSize, "");
     }
-
-    private volatile String value = "";
 
     public String get() {
         return value;
     }
 
-    public void set_cropIfNotProper(String newValue) {
+    public TS_FileRaTableCellStr set_cropIfNotProper(String newValue) {
         if (!properIs(newValue)) {
             newValue = properMake(newValue);
         }
         this.value = newValue;
-    }
-
-    @Deprecated //WARNING MAY NOT SET IF NOT PROPER!
-    public boolean set(String newValue) {
-        if (!properIs(newValue)) {
-            return false;
-        }
-        this.value = newValue;
-        return true;
+        return this;
     }
 
     public boolean properIs(String newValue) {
