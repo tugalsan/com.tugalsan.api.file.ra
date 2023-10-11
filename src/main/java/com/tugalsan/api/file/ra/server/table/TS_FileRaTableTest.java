@@ -12,12 +12,13 @@ public class TS_FileRaTableTest {
     public static void main(String... s) {
         var dbPath = TS_PathUtils.getPathCurrent_nio(TS_FileRaTableTest.class.getName() + ".jdb");
         d.cr("main", "dbPath", dbPath);
-        table_size(dbPath);
+//        table_size(dbPath);
+        table_set_get(dbPath);
     }
 
     public static void table_size(Path dbPath) {
         var template0Id = TS_FileRaTableCellLng.ofTemplate();
-        var template1Name = TS_FileRaTableCellStr.ofTemplate(256);
+        var template1Name = TS_FileRaTableCellStr.ofTemplate(20);
         var template2Price = TS_FileRaTableCellDbl.ofTemplate();
         var jdbt = TS_FileRaTable.of(dbPath, template0Id, template1Name, template2Price);
         template1Name.set_cropIfNotProper("Ali gel");

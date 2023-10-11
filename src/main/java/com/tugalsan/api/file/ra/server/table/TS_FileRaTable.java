@@ -78,10 +78,7 @@ public class TS_FileRaTable {
     public TGS_Optional<Boolean> rowIsEmpty(long idx) {
         var rowOp = rowGet(idx);
         if (rowOp.payload.isEmpty()) {
-            if (rowOp.info.isEmpty() || rowOp.info.getFirst() == null) {
-                return TGS_Optional.ofEmpty("ERROR @ TS_FileRaTable.rowIsEmpty: rowOp.info.isEmpty()");
-            }
-            return TGS_Optional.ofEmpty(rowOp.info.getFirst().toString());
+            return rowOp.toEmptyFirstInfoOr("ERROR @ TS_FileRaTable.rowIsEmpty: rowOp.info.isEmpty()");
         }
         return TGS_Optional.of(template.rowIsEmpty(rowOp.payload.get()));
     }
