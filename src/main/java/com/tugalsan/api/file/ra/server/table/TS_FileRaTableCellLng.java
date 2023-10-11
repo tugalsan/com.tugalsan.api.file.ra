@@ -7,24 +7,36 @@ public class TS_FileRaTableCellLng extends TS_FileRaTableCellBase {
         return 8;
     }
 
-    private TS_FileRaTableCellLng(long value) {
+    private TS_FileRaTableCellLng(long value, boolean isValue) {
         this.value = value;
+        this.isValue = isValue;
+    }
+    private volatile long value;
+    final public boolean isValue;
+
+    public static TS_FileRaTableCellLng ofTemplate() {
+        return new TS_FileRaTableCellLng(0, false);
     }
 
-    public static TS_FileRaTableCellLng ofEmpty() {
-        return new TS_FileRaTableCellLng(0);
+    public TS_FileRaTableCellLng toValue(long value) {
+        return new TS_FileRaTableCellLng(value, true);
     }
 
-    public TS_FileRaTableCellLng set(long value) {
+    public TS_FileRaTableCellLng toValueEmpty() {
+        return new TS_FileRaTableCellLng(0, true);
+    }
+
+    public boolean set(long value) {
+        if (!isValue) {
+            return false;
+        }
         this.value = value;
-        return this;
+        return true;
     }
 
     public long get() {
         return value;
     }
-
-    private volatile long value;
 
     @Override
     public String toString() {

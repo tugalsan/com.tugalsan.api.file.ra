@@ -9,27 +9,40 @@ public class TS_FileRaTableCellStr extends TS_FileRaTableCellBase {
         return byteSize;
     }
 
-    public TS_FileRaTableCellStr(int byteSize, String value) {
+    public TS_FileRaTableCellStr(int byteSize, String value, boolean isValue) {
         this.byteSize = byteSize;
         this.value = value;
+        this.isValue = isValue;
     }
     final private int byteSize;
     private volatile String value;
+    final public boolean isValue;
 
-    public static TS_FileRaTableCellStr ofEmpty(int byteSize) {
-        return new TS_FileRaTableCellStr(byteSize, "");
+    public static TS_FileRaTableCellStr ofTemplate(int byteSize) {
+        return new TS_FileRaTableCellStr(byteSize, "", false);
+    }
+
+    public TS_FileRaTableCellStr toValue_cropIfNotProper(String value) {
+        return new TS_FileRaTableCellStr(byteSize, value, true);
+    }
+
+    public TS_FileRaTableCellStr toValueEmpty() {
+        return new TS_FileRaTableCellStr(byteSize, "", true);
     }
 
     public String get() {
         return value;
     }
 
-    public TS_FileRaTableCellStr set_cropIfNotProper(String newValue) {
+    public boolean set_cropIfNotProper(String newValue) {
+        if (!isValue) {
+            return false;
+        }
         if (!properIs(newValue)) {
             newValue = properMake(newValue);
         }
         this.value = newValue;
-        return this;
+        return true;
     }
 
     public boolean properIs(String newValue) {

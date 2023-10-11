@@ -16,13 +16,13 @@ public class TS_FileRaTableTest {
     }
 
     public static void table_size(Path dbPath) {
-        var empty0Id = TS_FileRaTableCellLng.ofEmpty();
-        var empty1Name = TS_FileRaTableCellStr.ofEmpty(256);
-        var empty2Price = TS_FileRaTableCellDbl.ofEmpty();
-        var jdbt = TS_FileRaTable.of(dbPath, empty0Id, empty1Name, empty2Price);
-        empty1Name.set_cropIfNotProper("Ali gel");
+        var template0Id = TS_FileRaTableCellLng.ofTemplate();
+        var template1Name = TS_FileRaTableCellStr.ofTemplate(256);
+        var template2Price = TS_FileRaTableCellDbl.ofTemplate();
+        var jdbt = TS_FileRaTable.of(dbPath, template0Id, template1Name, template2Price);
+        template1Name.set_cropIfNotProper("Ali gel");
         for (var i = 0; i < 10000; i++) {
-            var e = jdbt.rowSet(i, empty0Id, empty1Name, empty2Price);
+            var e = jdbt.rowSet(i, template0Id, template1Name, template2Price);
             if (e != null) {
                 throw new RuntimeException(e);
             }
@@ -33,18 +33,20 @@ public class TS_FileRaTableTest {
 
     public static void table_set_get(Path dbPath) {
         var r = new Random();
-        var empty0Id = TS_FileRaTableCellLng.ofEmpty();
-        var empty1Name = TS_FileRaTableCellStr.ofEmpty(20);
-        var empty2Price = TS_FileRaTableCellDbl.ofEmpty();
+        var template0Id = TS_FileRaTableCellLng.ofTemplate();
+        var template1Name = TS_FileRaTableCellStr.ofTemplate(20);
+        var template2Price = TS_FileRaTableCellDbl.ofTemplate();
 
-        var jdbt = TS_FileRaTable.of(dbPath, empty0Id, empty1Name, empty2Price);
+        var jdbt = TS_FileRaTable.of(dbPath, template0Id, template1Name, template2Price);
         d.cr("main", "rowSize", jdbt.rowSize());
 
         {
-            empty0Id.set(r.nextInt());
-            empty1Name.set_cropIfNotProper("FirstString");
-            empty2Price.set(r.nextDouble());
-            var e = jdbt.rowSet(0, empty0Id, empty1Name, empty2Price);
+            var e = jdbt.rowSet(
+                    0,
+                    template0Id.toValue(r.nextInt()),
+                    template1Name.toValue_cropIfNotProper("FirstString"),
+                    template2Price.toValue(r.nextDouble())
+            );
             if (e != null) {
                 throw new RuntimeException(e);
             }
@@ -52,10 +54,12 @@ public class TS_FileRaTableTest {
         }
 
         {
-            empty0Id.set(r.nextInt());
-            empty1Name.set_cropIfNotProper("SecondString");
-            empty2Price.set(r.nextDouble());
-            var e = jdbt.rowSet(1, empty0Id, empty1Name, empty2Price);
+            var e = jdbt.rowSet(
+                    0,
+                    template0Id.toValue(r.nextInt()),
+                    template1Name.toValue_cropIfNotProper("SecondString"),
+                    template2Price.toValue(r.nextDouble())
+            );
             if (e != null) {
                 throw new RuntimeException(e);
             }
@@ -63,10 +67,12 @@ public class TS_FileRaTableTest {
         }
 
         {
-            empty0Id.set(r.nextInt());
-            empty1Name.set_cropIfNotProper("ThirdString");
-            empty2Price.set(r.nextDouble());
-            var e = jdbt.rowSet(2, empty0Id, empty1Name, empty2Price);
+            var e = jdbt.rowSet(
+                    0,
+                    template0Id.toValue(r.nextInt()),
+                    template1Name.toValue_cropIfNotProper("ThirdString"),
+                    template2Price.toValue(r.nextDouble())
+            );
             if (e != null) {
                 throw new RuntimeException(e);
             }
@@ -74,23 +80,21 @@ public class TS_FileRaTableTest {
         }
 
         {
-            empty0Id.set(r.nextInt());
-            var str = "nSecondStringlksdjsald jlaskdj laskjd laskdj lkasjd laskdjlaskdj laskdj salkd ";
-            empty1Name.set_cropIfNotProper(str);
-            empty2Price.set(r.nextDouble());
-            var e = jdbt.rowSet(1, empty0Id, empty1Name, empty2Price);
+            var e = jdbt.rowSet(
+                    0,
+                    template0Id.toValue(r.nextInt()),
+                    template1Name.toValue_cropIfNotProper("nSecondStringlksdjsald jlaskdj laskjd laskdj lkasjd laskdjlaskdj laskdj salkd "),
+                    template2Price.toValue(r.nextDouble())
+            );
             if (e != null) {
                 throw new RuntimeException(e);
             }
             d.cr("main", "nSecondString", "rowSize", jdbt.rowSize());
         }
 
-        for (int i = 0; i < 3; i++) {
+        for (var i = 0; i < 3; i++) {
             var row = jdbt.rowGet(i);
-            empty0Id = (TS_FileRaTableCellLng) row.get(0);
-            empty1Name = (TS_FileRaTableCellStr) row.get(1);
-            empty2Price = (TS_FileRaTableCellDbl) row.get(2);
-            d.cr("main", "for", i, empty0Id, empty1Name, empty2Price);
+            d.cr("main", "for", i, row.get(0), row.get(1), row.get(2));
         }
     }
 }

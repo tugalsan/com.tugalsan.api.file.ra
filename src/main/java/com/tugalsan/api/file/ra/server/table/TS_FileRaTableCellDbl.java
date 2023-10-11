@@ -7,24 +7,36 @@ public class TS_FileRaTableCellDbl extends TS_FileRaTableCellBase {
         return 8;
     }
 
-    private TS_FileRaTableCellDbl(double value) {
+    private TS_FileRaTableCellDbl(double value, boolean isValue) {
         this.value = value;
+        this.isValue = isValue;
+    }
+    private volatile double value;
+    final public boolean isValue;
+
+    public static TS_FileRaTableCellDbl ofTemplate() {
+        return new TS_FileRaTableCellDbl(0, false);
     }
 
-    public static TS_FileRaTableCellDbl ofEmpty() {
-        return new TS_FileRaTableCellDbl(0);
+    public TS_FileRaTableCellDbl toValue(double value) {
+        return new TS_FileRaTableCellDbl(value, true);
     }
 
-    public TS_FileRaTableCellDbl set(double value) {
+    public TS_FileRaTableCellDbl toValueEmpty() {
+        return new TS_FileRaTableCellDbl(0, true);
+    }
+
+    public boolean set(double value) {
+        if (!isValue) {
+            return false;
+        }
         this.value = value;
-        return this;
+        return true;
     }
 
     public double get() {
         return value;
     }
-
-    private volatile double value;
 
     @Override
     public String toString() {
