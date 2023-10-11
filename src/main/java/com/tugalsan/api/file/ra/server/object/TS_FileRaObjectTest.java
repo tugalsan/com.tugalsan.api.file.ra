@@ -12,7 +12,7 @@ public class TS_FileRaObjectTest {
 
     public static void main(String... s) {
         TGS_UnSafe.run(() -> {
-            var dbPath = TS_PathUtils.getPathCurrent_nio(TS_FileRaObjectTest.class.getName() + ".jdb");
+            var dbPath = TS_PathUtils.getPathCurrent_nio(TS_FileRaObjectTest.class.getName() + ".ra");
             var dbOp = TS_FileRaObjectFile.of(dbPath);
             if (dbOp.payload.isEmpty()) {
                 d.ce("main", "ERROR @ RecordsFile.of", dbOp.info);

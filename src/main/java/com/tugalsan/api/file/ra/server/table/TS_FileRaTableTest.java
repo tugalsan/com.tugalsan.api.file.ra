@@ -10,7 +10,7 @@ public class TS_FileRaTableTest {
     final private static TS_Log d = TS_Log.of(false, TS_FileRaTableTest.class);
 
     public static void main(String... s) {
-        var dbPath = TS_PathUtils.getPathCurrent_nio(TS_FileRaTableTest.class.getName() + ".jdb");
+        var dbPath = TS_PathUtils.getPathCurrent_nio(TS_FileRaTableTest.class.getName() + ".ra");
         d.cr("main", "dbPath", dbPath);
 //        table_size(dbPath);
         table_set_get(dbPath);

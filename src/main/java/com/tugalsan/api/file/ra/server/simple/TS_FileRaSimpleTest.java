@@ -9,7 +9,7 @@ public class TS_FileRaSimpleTest {
     final private static TS_Log d = TS_Log.of(false, TS_FileRaSimpleTest.class);
 
     public static void main(String... s) {
-        var dbPath = TS_PathUtils.getPathCurrent_nio(TS_FileRaSimpleTest.class.getName() + ".jdb");
+        var dbPath = TS_PathUtils.getPathCurrent_nio(TS_FileRaSimpleTest.class.getName() + ".ra");
         d.cr("main", "dbPath", dbPath);
         text(dbPath);
     }
