@@ -45,4 +45,9 @@ public class TS_FileRaTableCellStr extends TS_FileRaTableCellBase {
         }
         return newValue;
     }
+
+    @Override
+    public String toString() {
+        return TS_FileRaTableCellStr.class.getSimpleName() + "{" + "value=" + value + " , byteSize=" + byteSize + '}';
+    }
 }

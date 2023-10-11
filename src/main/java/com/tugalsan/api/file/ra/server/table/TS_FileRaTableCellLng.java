@@ -25,4 +25,9 @@ public class TS_FileRaTableCellLng extends TS_FileRaTableCellBase {
     }
 
     private volatile long value;
+
+    @Override
+    public String toString() {
+        return TS_FileRaTableCellLng.class.getSimpleName() + "{" + "value=" + value + '}';
+    }
 }

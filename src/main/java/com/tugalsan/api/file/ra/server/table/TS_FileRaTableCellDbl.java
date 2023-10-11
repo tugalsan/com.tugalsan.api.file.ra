@@ -25,4 +25,9 @@ public class TS_FileRaTableCellDbl extends TS_FileRaTableCellBase {
     }
 
     private volatile double value;
+
+    @Override
+    public String toString() {
+        return TS_FileRaTableCellDbl.class.getSimpleName() + "{" + "value=" + value + '}';
+    }
 }

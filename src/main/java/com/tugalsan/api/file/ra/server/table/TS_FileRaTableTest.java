@@ -16,13 +16,13 @@ public class TS_FileRaTableTest {
     }
 
     public static void table_size(Path dbPath) {
-        var colId = TS_FileRaTableCellLng.ofEmpty();
-        var colName = TS_FileRaTableCellStr.ofEmpty(256);
-        var colPrice = TS_FileRaTableCellDbl.ofEmpty();
-        var jdbt = TS_FileRaTable.of(dbPath, colId, colName, colPrice);
-        colName.set_cropIfNotProper("Ali gel");
+        var empty0Id = TS_FileRaTableCellLng.ofEmpty();
+        var empty1Name = TS_FileRaTableCellStr.ofEmpty(256);
+        var empty2Price = TS_FileRaTableCellDbl.ofEmpty();
+        var jdbt = TS_FileRaTable.of(dbPath, empty0Id, empty1Name, empty2Price);
+        empty1Name.set_cropIfNotProper("Ali gel");
         for (var i = 0; i < 10000; i++) {
-            var e = jdbt.rowSet(i, colId, colName, colPrice);
+            var e = jdbt.rowSet(i, empty0Id, empty1Name, empty2Price);
             if (e != null) {
                 throw new RuntimeException(e);
             }
@@ -33,18 +33,18 @@ public class TS_FileRaTableTest {
 
     public static void table_set_get(Path dbPath) {
         var r = new Random();
-        var colId = TS_FileRaTableCellLng.ofEmpty();
-        var colName = TS_FileRaTableCellStr.ofEmpty(20);
-        var colPrice = TS_FileRaTableCellDbl.ofEmpty();
+        var empty0Id = TS_FileRaTableCellLng.ofEmpty();
+        var empty1Name = TS_FileRaTableCellStr.ofEmpty(20);
+        var empty2Price = TS_FileRaTableCellDbl.ofEmpty();
 
-        var jdbt = TS_FileRaTable.of(dbPath, colId, colName, colPrice);
+        var jdbt = TS_FileRaTable.of(dbPath, empty0Id, empty1Name, empty2Price);
         d.cr("main", "rowSize", jdbt.rowSize());
 
         {
-            colId.set(r.nextInt());
-            colName.set_cropIfNotProper("FirstString");
-            colPrice.set(r.nextDouble());
-            var e = jdbt.rowSet(0, colId, colName, colPrice);
+            empty0Id.set(r.nextInt());
+            empty1Name.set_cropIfNotProper("FirstString");
+            empty2Price.set(r.nextDouble());
+            var e = jdbt.rowSet(0, empty0Id, empty1Name, empty2Price);
             if (e != null) {
                 throw new RuntimeException(e);
             }
@@ -52,10 +52,10 @@ public class TS_FileRaTableTest {
         }
 
         {
-            colId.set(r.nextInt());
-            colName.set_cropIfNotProper("SecondString");
-            colPrice.set(r.nextDouble());
-            var e = jdbt.rowSet(1, colId, colName, colPrice);
+            empty0Id.set(r.nextInt());
+            empty1Name.set_cropIfNotProper("SecondString");
+            empty2Price.set(r.nextDouble());
+            var e = jdbt.rowSet(1, empty0Id, empty1Name, empty2Price);
             if (e != null) {
                 throw new RuntimeException(e);
             }
@@ -63,10 +63,10 @@ public class TS_FileRaTableTest {
         }
 
         {
-            colId.set(r.nextInt());
-            colName.set_cropIfNotProper("ThirdString");
-            colPrice.set(r.nextDouble());
-            var e = jdbt.rowSet(2, colId, colName, colPrice);
+            empty0Id.set(r.nextInt());
+            empty1Name.set_cropIfNotProper("ThirdString");
+            empty2Price.set(r.nextDouble());
+            var e = jdbt.rowSet(2, empty0Id, empty1Name, empty2Price);
             if (e != null) {
                 throw new RuntimeException(e);
             }
@@ -74,11 +74,11 @@ public class TS_FileRaTableTest {
         }
 
         {
-            colId.set(r.nextInt());
+            empty0Id.set(r.nextInt());
             var str = "nSecondStringlksdjsald jlaskdj laskjd laskdj lkasjd laskdjlaskdj laskdj salkd ";
-            colName.set_cropIfNotProper(str);
-            colPrice.set(r.nextDouble());
-            var e = jdbt.rowSet(1, colId, colName, colPrice);
+            empty1Name.set_cropIfNotProper(str);
+            empty2Price.set(r.nextDouble());
+            var e = jdbt.rowSet(1, empty0Id, empty1Name, empty2Price);
             if (e != null) {
                 throw new RuntimeException(e);
             }
@@ -87,11 +87,10 @@ public class TS_FileRaTableTest {
 
         for (int i = 0; i < 3; i++) {
             var row = jdbt.rowGet(i);
-            colId = (TS_FileRaTableCellLng) row.get(0);
-            colName = (TS_FileRaTableCellStr) row.get(1);
-            colPrice = (TS_FileRaTableCellDbl) row.get(2);
-            d.cr("main", "for", i, colId.get(), colName.get(), colPrice.get());
+            empty0Id = (TS_FileRaTableCellLng) row.get(0);
+            empty1Name = (TS_FileRaTableCellStr) row.get(1);
+            empty2Price = (TS_FileRaTableCellDbl) row.get(2);
+            d.cr("main", "for", i, empty0Id, empty1Name, empty2Price);
         }
-
     }
 }
