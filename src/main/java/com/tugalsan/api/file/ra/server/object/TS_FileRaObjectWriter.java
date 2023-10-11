@@ -1,16 +1,16 @@
-package com.tugalsan.api.file.ra.server.indexed;
+package com.tugalsan.api.file.ra.server.object;
 
 import java.io.*;
 
-public class TS_FileRaIndexedWriter {
+public class TS_FileRaObjectWriter {
 
     String key;
-    TS_FileRaIndexedStream out;
+    TS_FileRaObjectStream out;
     ObjectOutputStream objOut;
 
-    public TS_FileRaIndexedWriter(String key) {
+    public TS_FileRaObjectWriter(String key) {
         this.key = key;
-        out = new TS_FileRaIndexedStream();
+        out = new TS_FileRaObjectStream();
     }
 
     public String getKey() {

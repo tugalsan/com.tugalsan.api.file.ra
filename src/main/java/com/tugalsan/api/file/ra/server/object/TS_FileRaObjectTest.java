@@ -1,4 +1,4 @@
-package com.tugalsan.api.file.ra.server.indexed;
+package com.tugalsan.api.file.ra.server.object;
 
 import com.tugalsan.api.file.server.TS_PathUtils;
 import com.tugalsan.api.log.server.TS_Log;
@@ -6,14 +6,14 @@ import com.tugalsan.api.unsafe.client.TGS_UnSafe;
 import static java.lang.System.out;
 import java.util.Random;
 
-public class TS_FileRaIndexedTest {
+public class TS_FileRaObjectTest {
 
-    final private static TS_Log d = TS_Log.of(false, TS_FileRaIndexedTest.class);
+    final private static TS_Log d = TS_Log.of(false, TS_FileRaObjectTest.class);
 
     public static void main(String... s) {
         TGS_UnSafe.run(() -> {
-            var dbPath = TS_PathUtils.getPathCurrent_nio(TS_FileRaIndexedTest.class.getName() + ".jdb");
-            var dbOp = TS_FileRaIndexedFile.of(dbPath);
+            var dbPath = TS_PathUtils.getPathCurrent_nio(TS_FileRaObjectTest.class.getName() + ".jdb");
+            var dbOp = TS_FileRaObjectFile.of(dbPath);
             if (dbOp.payload.isEmpty()) {
                 d.ce("main", "ERROR @ RecordsFile.of", dbOp.info);
                 return;
@@ -21,7 +21,7 @@ public class TS_FileRaIndexedTest {
             var db = dbOp.payload.get();
             var r = new Random();
             {//load
-                var rw = new TS_FileRaIndexedWriter("foo.lastAccessTime");
+                var rw = new TS_FileRaObjectWriter("foo.lastAccessTime");
                 rw.writeObject(r.nextInt());
                 db.insertRecord(rw);
             }
@@ -31,7 +31,7 @@ public class TS_FileRaIndexedTest {
                 out.println("last access was at: " + object.toString());
             }
             {//write
-                var rw = new TS_FileRaIndexedWriter("foo.lastAccessTime");
+                var rw = new TS_FileRaObjectWriter("foo.lastAccessTime");
                 rw.writeObject(r.nextInt());
                 db.updateRecord(rw);
             }

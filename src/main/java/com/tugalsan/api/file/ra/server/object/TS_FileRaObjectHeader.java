@@ -1,8 +1,8 @@
-package com.tugalsan.api.file.ra.server.indexed;
+package com.tugalsan.api.file.ra.server.object;
 
 import java.io.*;
 
-public class TS_FileRaIndexedHeader {
+public class TS_FileRaObjectHeader {
 
     /**
      * File pointer to the first byte of record data (8 bytes).
@@ -21,10 +21,10 @@ public class TS_FileRaIndexedHeader {
      */
     protected int indexPosition;
 
-    protected TS_FileRaIndexedHeader() {
+    protected TS_FileRaObjectHeader() {
     }
 
-    protected TS_FileRaIndexedHeader(long dataPointer, int dataCapacity) {
+    protected TS_FileRaObjectHeader(long dataPointer, int dataCapacity) {
         if (dataCapacity < 1) {
             throw new IllegalArgumentException("Bad record size: " + dataCapacity);
         }
@@ -61,8 +61,8 @@ public class TS_FileRaIndexedHeader {
         out.writeInt(dataCount);
     }
 
-    protected static TS_FileRaIndexedHeader readHeader(DataInput in) throws IOException {
-        var r = new TS_FileRaIndexedHeader();
+    protected static TS_FileRaObjectHeader readHeader(DataInput in) throws IOException {
+        var r = new TS_FileRaObjectHeader();
         r.read(in);
         return r;
     }
@@ -71,9 +71,9 @@ public class TS_FileRaIndexedHeader {
      * Returns a new record header which occupies the free space of this record.
      * Shrinks this record size by the size of its free space.
      */
-    protected TS_FileRaIndexedHeader split() throws TS_FileRaIndexedException {
+    protected TS_FileRaObjectHeader split() throws TS_FileRaObjectException {
         var newFp = dataPointer + (long) dataCount;
-        var newRecord = new TS_FileRaIndexedHeader(newFp, getFreeSpace());
+        var newRecord = new TS_FileRaObjectHeader(newFp, getFreeSpace());
         dataCapacity = dataCount;
         return newRecord;
     }

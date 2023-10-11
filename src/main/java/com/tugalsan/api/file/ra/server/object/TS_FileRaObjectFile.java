@@ -1,4 +1,4 @@
-package com.tugalsan.api.file.ra.server.indexed;
+package com.tugalsan.api.file.ra.server.object;
 
 import com.tugalsan.api.file.server.TS_FileUtils;
 import com.tugalsan.api.optional.client.TGS_Optional;
@@ -7,7 +7,7 @@ import java.io.*;
 import java.nio.file.Path;
 import java.util.*;
 
-public class TS_FileRaIndexedFile extends TS_FileRaIndexedBase {
+public class TS_FileRaObjectFile extends TS_FileRaObjectBase {
 
     /**
      * Hashtable which holds the in-memory index. For efficiency, the entire
@@ -16,8 +16,8 @@ public class TS_FileRaIndexedFile extends TS_FileRaIndexedBase {
      */
     protected Hashtable memIndex;
 
-    public static TGS_Optional<TS_FileRaIndexedFile> of(Path dbPath) {
-        return TGS_UnSafe.call(() -> TS_FileUtils.isExistFile(dbPath) ? TGS_Optional.of(new TS_FileRaIndexedFile(dbPath, "rw")) : TGS_Optional.of(new TS_FileRaIndexedFile(dbPath, 64)), e -> TGS_Optional.ofEmpty(e.getClass().getSimpleName() + ":" + e.getMessage()));
+    public static TGS_Optional<TS_FileRaObjectFile> of(Path dbPath) {
+        return TGS_UnSafe.call(() -> TS_FileUtils.isExistFile(dbPath) ? TGS_Optional.of(new TS_FileRaObjectFile(dbPath, "rw")) : TGS_Optional.of(new TS_FileRaObjectFile(dbPath, 64)), e -> TGS_Optional.ofEmpty(e.getClass().getSimpleName() + ":" + e.getMessage()));
     }
 
     /**
@@ -25,7 +25,7 @@ public class TS_FileRaIndexedFile extends TS_FileRaIndexedBase {
      * amount of space which is allocated for the index. The index can grow
      * dynamically, but the parameter is provide to increase efficiency.
      */
-    private TS_FileRaIndexedFile(Path dbPath, int initialSize) throws IOException, TS_FileRaIndexedException {
+    private TS_FileRaObjectFile(Path dbPath, int initialSize) throws IOException, TS_FileRaObjectException {
         super(dbPath, initialSize);
         memIndex = new Hashtable(initialSize);
     }
@@ -33,13 +33,13 @@ public class TS_FileRaIndexedFile extends TS_FileRaIndexedBase {
     /**
      * Opens an existing database and initializes the in-memory index.
      */
-    private TS_FileRaIndexedFile(Path dbPath, String accessFlags) throws IOException, TS_FileRaIndexedException {
+    private TS_FileRaObjectFile(Path dbPath, String accessFlags) throws IOException, TS_FileRaObjectException {
         super(dbPath, accessFlags);
         var numRecords = readNumRecordsHeader();
         memIndex = new Hashtable(numRecords);
         for (int i = 0; i < numRecords; i++) {
             String key = readKeyFromIndex(i);
-            TS_FileRaIndexedHeader header = readRecordHeaderFromIndex(i);
+            TS_FileRaObjectHeader header = readRecordHeaderFromIndex(i);
             header.setIndexPosition(i);
             memIndex.put(key, header);
         }
@@ -69,10 +69,10 @@ public class TS_FileRaIndexedFile extends TS_FileRaIndexedBase {
     /**
      * Maps a key to a record header by looking it up in the in-memory index.
      */
-    protected TS_FileRaIndexedHeader keyToRecordHeader(String key) throws TS_FileRaIndexedException {
-        var h = (TS_FileRaIndexedHeader) memIndex.get(key);
+    protected TS_FileRaObjectHeader keyToRecordHeader(String key) throws TS_FileRaObjectException {
+        var h = (TS_FileRaObjectHeader) memIndex.get(key);
         if (h == null) {
-            throw new TS_FileRaIndexedException("Key not found: " + key);
+            throw new TS_FileRaObjectException("Key not found: " + key);
         }
         return h;
     }
@@ -81,12 +81,12 @@ public class TS_FileRaIndexedFile extends TS_FileRaIndexedBase {
      * This method searches the file for free space and then returns a
      * RecordHeader which uses the space. (O(n) memory accesses)
      */
-    protected TS_FileRaIndexedHeader allocateRecord(String key, int dataLength) throws TS_FileRaIndexedException, IOException {
+    protected TS_FileRaObjectHeader allocateRecord(String key, int dataLength) throws TS_FileRaObjectException, IOException {
         // search for empty space
-        TS_FileRaIndexedHeader newRecord = null;
+        TS_FileRaObjectHeader newRecord = null;
         var e = memIndex.elements();
         while (e.hasMoreElements()) {
-            var next = (TS_FileRaIndexedHeader) e.nextElement();
+            var next = (TS_FileRaObjectHeader) e.nextElement();
 //            var free = next.getFreeSpace();
             if (dataLength <= next.getFreeSpace()) {
                 newRecord = next.split();
@@ -98,7 +98,7 @@ public class TS_FileRaIndexedFile extends TS_FileRaIndexedBase {
             // append record to end of file - grows file to allocate space
             var fp = getFileLength();
             setFileLength(fp + dataLength);
-            newRecord = new TS_FileRaIndexedHeader(fp, dataLength);
+            newRecord = new TS_FileRaObjectHeader(fp, dataLength);
         }
         return newRecord;
     }
@@ -109,10 +109,10 @@ public class TS_FileRaIndexedFile extends TS_FileRaIndexedBase {
      * RecordHeader which is returned. Returns null if the location is not part
      * of a record. (O(n) mem accesses)
      */
-    protected TS_FileRaIndexedHeader getRecordAt(long targetFp) throws TS_FileRaIndexedException {
+    protected TS_FileRaObjectHeader getRecordAt(long targetFp) throws TS_FileRaObjectException {
         var e = memIndex.elements();
         while (e.hasMoreElements()) {
-            var next = (TS_FileRaIndexedHeader) e.nextElement();
+            var next = (TS_FileRaObjectHeader) e.nextElement();
             if (targetFp >= next.dataPointer
                     && targetFp < next.dataPointer + (long) next.dataCapacity) {
                 return next;
@@ -124,7 +124,7 @@ public class TS_FileRaIndexedFile extends TS_FileRaIndexedBase {
     /**
      * Closes the database.
      */
-    public synchronized void close() throws IOException, TS_FileRaIndexedException {
+    public synchronized void close() throws IOException, TS_FileRaObjectException {
         try {
             super.close();
         } finally {
@@ -137,7 +137,7 @@ public class TS_FileRaIndexedFile extends TS_FileRaIndexedBase {
      * Adds the new record to the in-memory index and calls the super class add
      * the index entry to the file.
      */
-    protected void addEntryToIndex(String key, TS_FileRaIndexedHeader newRecord, int currentNumRecords) throws IOException, TS_FileRaIndexedException {
+    protected void addEntryToIndex(String key, TS_FileRaObjectHeader newRecord, int currentNumRecords) throws IOException, TS_FileRaObjectException {
         super.addEntryToIndex(key, newRecord, currentNumRecords);
         memIndex.put(key, newRecord);
     }
@@ -146,8 +146,8 @@ public class TS_FileRaIndexedFile extends TS_FileRaIndexedBase {
      * Removes the record from the index. Replaces the target with the entry at
      * the end of the index.
      */
-    protected void deleteEntryFromIndex(String key, TS_FileRaIndexedHeader header, int currentNumRecords) throws IOException, TS_FileRaIndexedException {
+    protected void deleteEntryFromIndex(String key, TS_FileRaObjectHeader header, int currentNumRecords) throws IOException, TS_FileRaObjectException {
         super.deleteEntryFromIndex(key, header, currentNumRecords);
-        var deleted = (TS_FileRaIndexedHeader) memIndex.remove(key);
+        var deleted = (TS_FileRaObjectHeader) memIndex.remove(key);
     }
 }

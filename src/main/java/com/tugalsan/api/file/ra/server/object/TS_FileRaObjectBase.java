@@ -1,10 +1,10 @@
-package com.tugalsan.api.file.ra.server.indexed;
+package com.tugalsan.api.file.ra.server.object;
 
 import java.io.*;
 import java.nio.file.Path;
 import java.util.*;
 
-public abstract class TS_FileRaIndexedBase {
+public abstract class TS_FileRaObjectBase {
 
     private RandomAccessFile file;
     // Current file pointer to the start of the record data.
@@ -26,10 +26,10 @@ public abstract class TS_FileRaIndexedBase {
      * Creates a new database file, initializing the appropriate headers. Enough
      * space is allocated in the index for the specified initial size.
      */
-    protected TS_FileRaIndexedBase(Path dbPath, int initialSize) throws IOException, TS_FileRaIndexedException {
+    protected TS_FileRaObjectBase(Path dbPath, int initialSize) throws IOException, TS_FileRaObjectException {
         var f = dbPath.toFile();
         if (f.exists()) {
-            throw new TS_FileRaIndexedException("Database already exits: " + dbPath);
+            throw new TS_FileRaObjectException("Database already exits: " + dbPath);
         }
         file = new RandomAccessFile(f, "rw");
         dataStartPtr = indexPositionToKeyFp(initialSize);  // Record Data Region starts were the 
@@ -43,10 +43,10 @@ public abstract class TS_FileRaIndexedBase {
      * accessFlags parameter can be "r" or "rw" -- as defined in
      * RandomAccessFile.
      */
-    protected TS_FileRaIndexedBase(Path dbPath, String accessFlags) throws IOException, TS_FileRaIndexedException {
+    protected TS_FileRaObjectBase(Path dbPath, String accessFlags) throws IOException, TS_FileRaObjectException {
         var f = dbPath.toFile();
         if (!f.exists()) {
-            throw new TS_FileRaIndexedException("Database not found: " + dbPath);
+            throw new TS_FileRaObjectException("Database not found: " + dbPath);
         }
         file = new RandomAccessFile(f, accessFlags);
         dataStartPtr = readDataStartHeader();
@@ -70,13 +70,13 @@ public abstract class TS_FileRaIndexedBase {
     /**
      * Maps a key to a record header.
      */
-    protected abstract TS_FileRaIndexedHeader keyToRecordHeader(String key) throws TS_FileRaIndexedException;
+    protected abstract TS_FileRaObjectHeader keyToRecordHeader(String key) throws TS_FileRaObjectException;
 
     /**
      * Locates space for a new record of dataLength size and initializes a
      * RecordHeader.
      */
-    protected abstract TS_FileRaIndexedHeader allocateRecord(String key, int dataLength) throws TS_FileRaIndexedException, IOException;
+    protected abstract TS_FileRaObjectHeader allocateRecord(String key, int dataLength) throws TS_FileRaObjectException, IOException;
 
     /**
      * Returns the record to which the target file pointer belongs - meaning the
@@ -84,7 +84,7 @@ public abstract class TS_FileRaIndexedBase {
      * RecordHeader which is returned. Returns null if the location is not part
      * of a record. (O(n) mem accesses)
      */
-    protected abstract TS_FileRaIndexedHeader getRecordAt(long targetFp) throws TS_FileRaIndexedException;
+    protected abstract TS_FileRaObjectHeader getRecordAt(long targetFp) throws TS_FileRaObjectException;
 
     protected long getFileLength() throws IOException {
         return file.length();
@@ -153,15 +153,15 @@ public abstract class TS_FileRaIndexedBase {
     /**
      * Reads the ith record header from the index.
      */
-    TS_FileRaIndexedHeader readRecordHeaderFromIndex(int position) throws IOException {
+    TS_FileRaObjectHeader readRecordHeaderFromIndex(int position) throws IOException {
         file.seek(indexPositionToRecordHeaderFp(position));
-        return TS_FileRaIndexedHeader.readHeader(file);
+        return TS_FileRaObjectHeader.readHeader(file);
     }
 
     /**
      * Writes the ith record header to the index.
      */
-    protected void writeRecordHeaderToIndex(TS_FileRaIndexedHeader header) throws IOException {
+    protected void writeRecordHeaderToIndex(TS_FileRaObjectHeader header) throws IOException {
         file.seek(indexPositionToRecordHeaderFp(header.indexPosition));
         header.write(file);
     }
@@ -170,11 +170,11 @@ public abstract class TS_FileRaIndexedBase {
      * Appends an entry to end of index. Assumes that insureIndexSpace() has
      * already been called.
      */
-    protected void addEntryToIndex(String key, TS_FileRaIndexedHeader newRecord, int currentNumRecords) throws IOException, TS_FileRaIndexedException {
-        var temp = new TS_FileRaIndexedStream(MAX_KEY_LENGTH);
+    protected void addEntryToIndex(String key, TS_FileRaObjectHeader newRecord, int currentNumRecords) throws IOException, TS_FileRaObjectException {
+        var temp = new TS_FileRaObjectStream(MAX_KEY_LENGTH);
         (new DataOutputStream(temp)).writeUTF(key);
         if (temp.size() > MAX_KEY_LENGTH) {
-            throw new TS_FileRaIndexedException("Key is larger than permitted size of " + MAX_KEY_LENGTH + " bytes");
+            throw new TS_FileRaObjectException("Key is larger than permitted size of " + MAX_KEY_LENGTH + " bytes");
         }
         file.seek(indexPositionToKeyFp(currentNumRecords));
         temp.writeTo(file);
@@ -188,7 +188,7 @@ public abstract class TS_FileRaIndexedBase {
      * Removes the record from the index. Replaces the target with the entry at
      * the end of the index.
      */
-    protected void deleteEntryFromIndex(String key, TS_FileRaIndexedHeader header, int currentNumRecords) throws IOException, TS_FileRaIndexedException {
+    protected void deleteEntryFromIndex(String key, TS_FileRaObjectHeader header, int currentNumRecords) throws IOException, TS_FileRaObjectException {
         if (header.indexPosition != currentNumRecords - 1) {
             var lastKey = readKeyFromIndex(currentNumRecords - 1);
             var last = keyToRecordHeader(lastKey);
@@ -204,10 +204,10 @@ public abstract class TS_FileRaIndexedBase {
     /**
      * Adds the given record to the database.
      */
-    public synchronized void insertRecord(TS_FileRaIndexedWriter rw) throws TS_FileRaIndexedException, IOException {
+    public synchronized void insertRecord(TS_FileRaObjectWriter rw) throws TS_FileRaObjectException, IOException {
         var key = rw.getKey();
         if (recordExists(key)) {
-            throw new TS_FileRaIndexedException("Key exists: " + key);
+            throw new TS_FileRaObjectException("Key exists: " + key);
         }
         insureIndexSpace(getNumRecords() + 1);
         var newRecord = allocateRecord(key, rw.getDataLength());
@@ -220,7 +220,7 @@ public abstract class TS_FileRaIndexedBase {
      * original record, then the update is handled by deleting the old record
      * and adding the new.
      */
-    public synchronized void updateRecord(TS_FileRaIndexedWriter rw) throws TS_FileRaIndexedException, IOException {
+    public synchronized void updateRecord(TS_FileRaObjectWriter rw) throws TS_FileRaObjectException, IOException {
         var header = keyToRecordHeader(rw.getKey());
         if (rw.getDataLength() > header.dataCapacity) {
             deleteRecord(rw.getKey());
@@ -234,22 +234,22 @@ public abstract class TS_FileRaIndexedBase {
     /**
      * Reads a record.
      */
-    public synchronized TS_FileRaIndexedReader readRecord(String key) throws TS_FileRaIndexedException, IOException {
+    public synchronized TS_FileRaObjectReader readRecord(String key) throws TS_FileRaObjectException, IOException {
         var data = readRecordData(key);
-        return new TS_FileRaIndexedReader(key, data);
+        return new TS_FileRaObjectReader(key, data);
     }
 
     /**
      * Reads the data for the record with the given key.
      */
-    protected byte[] readRecordData(String key) throws IOException, TS_FileRaIndexedException {
+    protected byte[] readRecordData(String key) throws IOException, TS_FileRaObjectException {
         return readRecordData(keyToRecordHeader(key));
     }
 
     /**
      * Reads the record data for the given record header.
      */
-    protected byte[] readRecordData(TS_FileRaIndexedHeader header) throws IOException {
+    protected byte[] readRecordData(TS_FileRaObjectHeader header) throws IOException {
         var buf = new byte[header.dataCount];
         file.seek(header.dataPointer);
         file.readFully(buf);
@@ -261,9 +261,9 @@ public abstract class TS_FileRaIndexedBase {
      * thrown if the new data does not fit in the space allocated to the record.
      * The header's data count is updated, but not written to the file.
      */
-    protected void writeRecordData(TS_FileRaIndexedHeader header, TS_FileRaIndexedWriter rw) throws IOException, TS_FileRaIndexedException {
+    protected void writeRecordData(TS_FileRaObjectHeader header, TS_FileRaObjectWriter rw) throws IOException, TS_FileRaObjectException {
         if (rw.getDataLength() > header.dataCapacity) {
-            throw new TS_FileRaIndexedException("Record data does not fit");
+            throw new TS_FileRaObjectException("Record data does not fit");
         }
         header.dataCount = rw.getDataLength();
         file.seek(header.dataPointer);
@@ -275,9 +275,9 @@ public abstract class TS_FileRaIndexedBase {
      * thrown if the new data does not fit in the space allocated to the record.
      * The header's data count is updated, but not written to the file.
      */
-    protected void writeRecordData(TS_FileRaIndexedHeader header, byte[] data) throws IOException, TS_FileRaIndexedException {
+    protected void writeRecordData(TS_FileRaObjectHeader header, byte[] data) throws IOException, TS_FileRaObjectException {
         if (data.length > header.dataCapacity) {
-            throw new TS_FileRaIndexedException("Record data does not fit");
+            throw new TS_FileRaObjectException("Record data does not fit");
         }
         header.dataCount = data.length;
         file.seek(header.dataPointer);
@@ -287,7 +287,7 @@ public abstract class TS_FileRaIndexedBase {
     /**
      * Deletes a record.
      */
-    public synchronized void deleteRecord(String key) throws TS_FileRaIndexedException, IOException {
+    public synchronized void deleteRecord(String key) throws TS_FileRaObjectException, IOException {
         var delRec = keyToRecordHeader(key);
         var currentNumRecords = getNumRecords();
         if (getFileLength() == delRec.dataPointer + delRec.dataCapacity) {
@@ -315,7 +315,7 @@ public abstract class TS_FileRaIndexedBase {
     // Checks to see if there is space for and additional index entry. If 
     // not, space is created by moving records to the end of the file.
 
-    protected void insureIndexSpace(int requiredNumRecords) throws TS_FileRaIndexedException, IOException {
+    protected void insureIndexSpace(int requiredNumRecords) throws TS_FileRaObjectException, IOException {
         var currentNumRecords = getNumRecords();
         var endIndexPtr = indexPositionToKeyFp(requiredNumRecords);
         if (endIndexPtr > getFileLength() && currentNumRecords == 0) {
@@ -337,7 +337,7 @@ public abstract class TS_FileRaIndexedBase {
         }
     }
 
-    public synchronized void close() throws IOException, TS_FileRaIndexedException {
+    public synchronized void close() throws IOException, TS_FileRaObjectException {
         try {
             file.close();
         } finally {

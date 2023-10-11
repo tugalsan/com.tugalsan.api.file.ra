@@ -1,15 +1,15 @@
-package com.tugalsan.api.file.ra.server.indexed;
+package com.tugalsan.api.file.ra.server.object;
 
 import java.io.*;
 
-public class TS_FileRaIndexedReader {
+public class TS_FileRaObjectReader {
 
     String key;
     byte[] data;
     ByteArrayInputStream in;
     ObjectInputStream objIn;
 
-    public TS_FileRaIndexedReader(String key, byte[] data) {
+    public TS_FileRaObjectReader(String key, byte[] data) {
         this.key = key;
         this.data = data;
         in = new ByteArrayInputStream(data);
