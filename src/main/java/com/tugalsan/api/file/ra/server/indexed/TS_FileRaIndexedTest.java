@@ -2,10 +2,9 @@ package com.tugalsan.api.file.ra.server.indexed;
 
 import com.tugalsan.api.file.server.TS_PathUtils;
 import com.tugalsan.api.log.server.TS_Log;
-import com.tugalsan.api.time.client.TGS_Time;
 import com.tugalsan.api.unsafe.client.TGS_UnSafe;
 import static java.lang.System.out;
-import java.util.Date;
+import java.util.Random;
 
 public class TS_FileRaIndexedTest {
 
@@ -20,19 +19,20 @@ public class TS_FileRaIndexedTest {
                 return;
             }
             var db = dbOp.payload.get();
+            var r = new Random();
             {//load
                 var rw = new TS_FileRaIndexedWriter("foo.lastAccessTime");
-                rw.writeObject(TGS_Time.of());
+                rw.writeObject(r.nextInt());
                 db.insertRecord(rw);
             }
             {//retrive
                 var record = db.readRecord("foo.lastAccessTime");
-                var time = (TGS_Time) record.readObject();
-                out.println("last access was at: " + time.toString());
+                var object = (Integer) record.readObject();
+                out.println("last access was at: " + object.toString());
             }
             {//write
                 var rw = new TS_FileRaIndexedWriter("foo.lastAccessTime");
-                rw.writeObject(new Date());
+                rw.writeObject(r.nextInt());
                 db.updateRecord(rw);
             }
             {//delete
