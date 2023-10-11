@@ -14,6 +14,11 @@ public class TS_FileRaTableCellLng extends TS_FileRaTableCellBase {
     private volatile long value;
     final public boolean isValue;
 
+    @Override
+    public boolean isEmpty() {
+        return value == 0;
+    }
+
     public static TS_FileRaTableCellLng ofTemplate() {
         return new TS_FileRaTableCellLng(0, false);
     }

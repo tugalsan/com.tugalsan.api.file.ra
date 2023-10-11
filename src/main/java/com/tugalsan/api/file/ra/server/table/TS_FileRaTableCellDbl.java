@@ -13,6 +13,11 @@ public class TS_FileRaTableCellDbl extends TS_FileRaTableCellBase {
     }
     private volatile double value;
     final public boolean isValue;
+    
+    @Override
+    public boolean isEmpty(){
+        return value == 0;
+    }
 
     public static TS_FileRaTableCellDbl ofTemplate() {
         return new TS_FileRaTableCellDbl(0, false);

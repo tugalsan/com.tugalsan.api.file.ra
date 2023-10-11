@@ -18,6 +18,11 @@ public class TS_FileRaTableCellStr extends TS_FileRaTableCellBase {
     private volatile String value;
     final public boolean isValue;
 
+    @Override
+    public boolean isEmpty() {
+        return value.isEmpty();
+    }
+
     public static TS_FileRaTableCellStr ofTemplate(int byteSize) {
         return new TS_FileRaTableCellStr(byteSize, "", false);
     }

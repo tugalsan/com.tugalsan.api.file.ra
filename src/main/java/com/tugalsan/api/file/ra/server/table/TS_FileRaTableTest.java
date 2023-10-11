@@ -27,7 +27,7 @@ public class TS_FileRaTableTest {
                 throw new RuntimeException(e);
             }
         }
-        d.cr("main", "colConfig.byteSize", jdbt.colConfig.byteSize());
+        d.cr("main", "colConfig.byteSize", jdbt.template.byteSize());
         d.cr("main", "rowSize", jdbt.rowSize());
     }
 
@@ -93,7 +93,7 @@ public class TS_FileRaTableTest {
         }
 
         for (var i = 0; i < 3; i++) {
-            var row = jdbt.rowGet(i);
+            var row = jdbt.rowGet(i).payload.get();
             d.cr("main", "for", i, row.get(0), row.get(1), row.get(2));
         }
     }

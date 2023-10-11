@@ -3,7 +3,7 @@ package com.tugalsan.api.file.ra.server.table;
 import com.tugalsan.api.file.server.TS_FileUtils;
 import com.tugalsan.api.file.ra.server.simple.TS_FileRaSimple;
 import com.tugalsan.api.log.server.TS_Log;
-import com.tugalsan.api.stream.client.TGS_StreamUtils;
+import com.tugalsan.api.optional.client.TGS_Optional;
 import com.tugalsan.api.unsafe.client.TGS_UnSafe;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -14,19 +14,19 @@ public class TS_FileRaTable {
 
     final private static TS_Log d = TS_Log.of(false, TS_FileRaTable.class);
 
-    private TS_FileRaTable(Path path, TS_FileRaTableConfig colConfig) {
+    private TS_FileRaTable(Path path, TS_FileRaTableTemplate colConfig) {
         this.simple = TS_FileRaSimple.of(path);
-        this.colConfig = colConfig;
+        this.template = colConfig;
     }
     final private TS_FileRaSimple simple;
-    final public TS_FileRaTableConfig colConfig;
+    final public TS_FileRaTableTemplate template;
 
-    public static TS_FileRaTable of(Path path, TS_FileRaTableConfig colConfig) {
+    public static TS_FileRaTable of(Path path, TS_FileRaTableTemplate colConfig) {
         return new TS_FileRaTable(path, colConfig);
     }
 
     public static TS_FileRaTable of(Path path, TS_FileRaTableCellBase... types) {
-        return new TS_FileRaTable(path, TS_FileRaTableConfig.of(types));
+        return new TS_FileRaTable(path, TS_FileRaTableTemplate.of(types));
     }
 
     public Path path() {
@@ -38,21 +38,21 @@ public class TS_FileRaTable {
             return 0L;
         }
         var sizeInBytes_db = TS_FileUtils.getFileSizeInBytes(path());
-        var sizeInBytes_row = colConfig.byteSize();
+        var sizeInBytes_row = template.byteSize();
         return sizeInBytes_db / sizeInBytes_row;
     }
 
     private long position(long idx) {
-        var pos = idx * colConfig.byteSize();
+        var pos = idx * template.byteSize();
         d.ci("position", pos);
         return pos;
     }
 
-    public List<TS_FileRaTableCellBase> rowGet(long idx) {
+    public TGS_Optional<List<TS_FileRaTableCellBase>> rowGet(long idx) {
         List<TS_FileRaTableCellBase> lst = new ArrayList();
         var position = position(idx);
-        for (var i = 0; i < colConfig.template.size(); i++) {
-            var colConfig_emptyRowI = colConfig.template.get(i);
+        for (var i = 0; i < template.columns.size(); i++) {
+            var colConfig_emptyRowI = template.columns.get(i);
             if (colConfig_emptyRowI instanceof TS_FileRaTableCellDbl templateDbl) {
                 var value = simple.getDoubleFromPostion(position).orThrowFirstInfo();
                 lst.add(templateDbl.toValue(value));
@@ -69,28 +69,25 @@ public class TS_FileRaTable {
                 position += templateStr.byteSize();
                 d.ci("rowGet", "i", i, "pos", position);
             } else {
-                throw new RuntimeException("ERROR @ TS_JdbList.rowGet: unkwon col type");
+                TGS_Optional.ofEmpty("ERROR @ TS_JdbList.rowGet: unkwon col type");
             }
         }
-        return lst;
+        return TGS_Optional.of(lst);
     }
 
-    public List<TS_FileRaTableCellBase> rowCreateEmpty() {
-        return TGS_StreamUtils.toLst(colConfig.template.stream().map(template -> {
-            if (template instanceof TS_FileRaTableCellDbl templateDbl) {
-                return templateDbl.toValueEmpty();
-            } else if (template instanceof TS_FileRaTableCellLng templateLng) {
-                return templateLng.toValueEmpty();
-            } else if (template instanceof TS_FileRaTableCellStr templateStr) {
-                return templateStr.toValueEmpty();
-            } else {
-                throw new RuntimeException("ERROR @ TS_JdbList.rowNew: unkwon col type");
+    public TGS_Optional<Boolean> rowIsEmpty(long idx) {
+        var rowOp = rowGet(idx);
+        if (rowOp.payload.isEmpty()) {
+            if (rowOp.info.isEmpty() || rowOp.info.getFirst() == null) {
+                return TGS_Optional.ofEmpty("ERROR @ TS_FileRaTable.rowIsEmpty: rowOp.info.isEmpty()");
             }
-        }));
+            return TGS_Optional.ofEmpty(rowOp.info.getFirst().toString());
+        }
+        return TGS_Optional.of(template.rowIsEmpty(rowOp.payload.get()));
     }
 
     public Exception rowSetEmpty(long idx) {
-        return rowSet(idx, rowCreateEmpty());
+        return rowSet(idx, template.rowCreateEmpty());
     }
 
     public Exception rowSet(long idx, TS_FileRaTableCellBase... rowValues) {
@@ -100,8 +97,8 @@ public class TS_FileRaTable {
     public Exception rowSet(long idx, List<? extends TS_FileRaTableCellBase> newRow) {
         return TGS_UnSafe.call(() -> {
             var position = position(idx);
-            for (var i = 0; i < colConfig.template.size(); i++) {
-                var colConfig_emptyRowI = colConfig.template.get(i);
+            for (var i = 0; i < template.columns.size(); i++) {
+                var colConfig_emptyRowI = template.columns.get(i);
                 var newRowValueI = newRow.get(i);
                 if (!Objects.equals(newRowValueI.getClass(), colConfig_emptyRowI.getClass())) {
                     throw new RuntimeException("ERROR @ TS_JdbList.rowSet: !Objects.equals(newRowValueI.getClass(), colConfig_emptyRowI.getClass())");
