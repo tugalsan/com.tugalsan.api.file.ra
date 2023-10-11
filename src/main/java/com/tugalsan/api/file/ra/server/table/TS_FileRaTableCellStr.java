@@ -28,7 +28,7 @@ public class TS_FileRaTableCellStr extends TS_FileRaTableCellBase {
     }
 
     public TS_FileRaTableCellStr toValue_cropIfNotProper(String value) {
-        return new TS_FileRaTableCellStr(byteSize, value, true);
+        return new TS_FileRaTableCellStr(byteSize, properMake(value), true);
     }
 
     public TS_FileRaTableCellStr toValueEmpty() {
