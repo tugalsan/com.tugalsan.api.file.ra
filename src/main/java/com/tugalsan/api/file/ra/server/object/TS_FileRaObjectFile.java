@@ -6,6 +6,7 @@ import com.tugalsan.api.unsafe.client.TGS_UnSafe;
 import java.io.*;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class TS_FileRaObjectFile extends TS_FileRaObjectBase {
 
@@ -14,7 +15,7 @@ public class TS_FileRaObjectFile extends TS_FileRaObjectBase {
      * index is cached in memory. The hashtable maps a key of type String to a
      * RecordHeader.
      */
-    protected Hashtable memIndex;
+    protected ConcurrentHashMap memIndex;
 
     public static TGS_Optional<TS_FileRaObjectFile> of(Path dbPath) {
         return TGS_UnSafe.call(() -> TS_FileUtils.isExistFile(dbPath) ? TGS_Optional.of(new TS_FileRaObjectFile(dbPath, "rw")) : TGS_Optional.of(new TS_FileRaObjectFile(dbPath, 64)), e -> TGS_Optional.ofEmpty(e.getClass().getSimpleName() + ":" + e.getMessage()));
@@ -27,7 +28,7 @@ public class TS_FileRaObjectFile extends TS_FileRaObjectBase {
      */
     private TS_FileRaObjectFile(Path dbPath, int initialSize) throws IOException, TS_FileRaObjectException {
         super(dbPath, initialSize);
-        memIndex = new Hashtable(initialSize);
+        memIndex = new ConcurrentHashMap(initialSize);
     }
 
     /**
@@ -36,10 +37,10 @@ public class TS_FileRaObjectFile extends TS_FileRaObjectBase {
     private TS_FileRaObjectFile(Path dbPath, String accessFlags) throws IOException, TS_FileRaObjectException {
         super(dbPath, accessFlags);
         var numRecords = readNumRecordsHeader();
-        memIndex = new Hashtable(numRecords);
-        for (int i = 0; i < numRecords; i++) {
-            String key = readKeyFromIndex(i);
-            TS_FileRaObjectHeader header = readRecordHeaderFromIndex(i);
+        memIndex = new ConcurrentHashMap(numRecords);
+        for (var i = 0; i < numRecords; i++) {
+            var key = readKeyFromIndex(i);
+            var header = readRecordHeaderFromIndex(i);
             header.setIndexPosition(i);
             memIndex.put(key, header);
         }
@@ -48,6 +49,7 @@ public class TS_FileRaObjectFile extends TS_FileRaObjectBase {
     /**
      * Returns an enumeration of all the keys in the database.
      */
+    @Override
     public synchronized Enumeration enumerateKeys() {
         return memIndex.keys();
     }
@@ -55,6 +57,7 @@ public class TS_FileRaObjectFile extends TS_FileRaObjectBase {
     /**
      * Returns the current number of records in the database.
      */
+    @Override
     public synchronized int getNumRecords() {
         return memIndex.size();
     }
@@ -62,6 +65,7 @@ public class TS_FileRaObjectFile extends TS_FileRaObjectBase {
     /**
      * Checks if there is a record belonging to the given key.
      */
+    @Override
     public synchronized boolean recordExists(String key) {
         return memIndex.containsKey(key);
     }
@@ -69,6 +73,7 @@ public class TS_FileRaObjectFile extends TS_FileRaObjectBase {
     /**
      * Maps a key to a record header by looking it up in the in-memory index.
      */
+    @Override
     protected TS_FileRaObjectHeader keyToRecordHeader(String key) throws TS_FileRaObjectException {
         var h = (TS_FileRaObjectHeader) memIndex.get(key);
         if (h == null) {
@@ -81,6 +86,7 @@ public class TS_FileRaObjectFile extends TS_FileRaObjectBase {
      * This method searches the file for free space and then returns a
      * RecordHeader which uses the space. (O(n) memory accesses)
      */
+    @Override
     protected TS_FileRaObjectHeader allocateRecord(String key, int dataLength) throws TS_FileRaObjectException, IOException {
         // search for empty space
         TS_FileRaObjectHeader newRecord = null;
@@ -109,6 +115,7 @@ public class TS_FileRaObjectFile extends TS_FileRaObjectBase {
      * RecordHeader which is returned. Returns null if the location is not part
      * of a record. (O(n) mem accesses)
      */
+    @Override
     protected TS_FileRaObjectHeader getRecordAt(long targetFp) throws TS_FileRaObjectException {
         var e = memIndex.elements();
         while (e.hasMoreElements()) {
@@ -124,6 +131,7 @@ public class TS_FileRaObjectFile extends TS_FileRaObjectBase {
     /**
      * Closes the database.
      */
+    @Override
     public synchronized void close() throws IOException, TS_FileRaObjectException {
         try {
             super.close();
@@ -137,6 +145,7 @@ public class TS_FileRaObjectFile extends TS_FileRaObjectBase {
      * Adds the new record to the in-memory index and calls the super class add
      * the index entry to the file.
      */
+    @Override
     protected void addEntryToIndex(String key, TS_FileRaObjectHeader newRecord, int currentNumRecords) throws IOException, TS_FileRaObjectException {
         super.addEntryToIndex(key, newRecord, currentNumRecords);
         memIndex.put(key, newRecord);
@@ -146,6 +155,7 @@ public class TS_FileRaObjectFile extends TS_FileRaObjectBase {
      * Removes the record from the index. Replaces the target with the entry at
      * the end of the index.
      */
+    @Override
     protected void deleteEntryFromIndex(String key, TS_FileRaObjectHeader header, int currentNumRecords) throws IOException, TS_FileRaObjectException {
         super.deleteEntryFromIndex(key, header, currentNumRecords);
         var deleted = (TS_FileRaObjectHeader) memIndex.remove(key);

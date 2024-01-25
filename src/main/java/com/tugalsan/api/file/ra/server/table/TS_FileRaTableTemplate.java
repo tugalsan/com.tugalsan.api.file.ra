@@ -24,14 +24,17 @@ public class TS_FileRaTableTemplate {
 
     public List<TS_FileRaTableCellBase> rowCreateEmpty() {
         return TGS_StreamUtils.toLst(columns.stream().map(template -> {
-            if (template instanceof TS_FileRaTableCellDbl templateDbl) {
-                return templateDbl.toValueEmpty();
-            } else if (template instanceof TS_FileRaTableCellLng templateLng) {
-                return templateLng.toValueEmpty();
-            } else if (template instanceof TS_FileRaTableCellStr templateStr) {
-                return templateStr.toValueEmpty();
-            } else {
-                throw new RuntimeException("ERROR @ TS_JdbList.rowNew: unkwon col type");
+            switch (template) {
+                case TS_FileRaTableCellDbl templateDbl -> {
+                    return templateDbl.toValueEmpty();
+                }
+                case TS_FileRaTableCellLng templateLng -> {
+                    return templateLng.toValueEmpty();
+                }
+                case TS_FileRaTableCellStr templateStr -> {
+                    return templateStr.toValueEmpty();
+                }
+                default -> throw new RuntimeException("ERROR @ TS_JdbList.rowNew: unkwon col type");
             }
         }));
     }

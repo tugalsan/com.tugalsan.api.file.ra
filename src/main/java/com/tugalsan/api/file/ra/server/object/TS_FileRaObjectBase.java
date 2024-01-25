@@ -97,7 +97,7 @@ public abstract class TS_FileRaObjectBase {
     /**
      * Reads the number of records header from the file.
      */
-    protected int readNumRecordsHeader() throws IOException {
+    final protected int readNumRecordsHeader() throws IOException {
         file.seek(NUM_RECORDS_HEADER_LOCATION);
         return file.readInt();
     }
@@ -113,7 +113,7 @@ public abstract class TS_FileRaObjectBase {
     /**
      * Reads the data start pointer header from the file.
      */
-    protected long readDataStartHeader() throws IOException {
+    final protected long readDataStartHeader() throws IOException {
         file.seek(DATA_START_HEADER_LOCATION);
         return file.readLong();
     }
@@ -145,7 +145,7 @@ public abstract class TS_FileRaObjectBase {
     /**
      * Reads the ith key from the index.
      */
-    String readKeyFromIndex(int position) throws IOException {
+    final String readKeyFromIndex(int position) throws IOException {
         file.seek(indexPositionToKeyFp(position));
         return file.readUTF();
     }
@@ -153,7 +153,7 @@ public abstract class TS_FileRaObjectBase {
     /**
      * Reads the ith record header from the index.
      */
-    TS_FileRaObjectHeader readRecordHeaderFromIndex(int position) throws IOException {
+    final TS_FileRaObjectHeader readRecordHeaderFromIndex(int position) throws IOException {
         file.seek(indexPositionToRecordHeaderFp(position));
         return TS_FileRaObjectHeader.readHeader(file);
     }
