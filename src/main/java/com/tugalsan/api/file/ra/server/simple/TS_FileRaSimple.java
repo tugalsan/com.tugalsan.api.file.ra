@@ -37,7 +37,7 @@ public class TS_FileRaSimple {
 
     public TGS_Union<Double> getDoubleFromPostion(long position) {
         var u = call(jdb -> TS_FileRaSimpleUtils.getDoubleFromPostion(jdb, position));
-        if (u.isError()) {
+        if (u.isExcuse()) {
             return TGS_Union.ofExcuse(u.excuse());
         }
         return u.value();
@@ -45,7 +45,7 @@ public class TS_FileRaSimple {
 
     public TGS_Union<Long> setDoubleFromPostion_calcNextPosition(long position, double value) {
         var u = call(raf -> TS_FileRaSimpleUtils.setDoubleFromPostion_calcNextPosition(raf, position, value));
-        if (u.isError()) {
+        if (u.isExcuse()) {
             return TGS_Union.ofExcuse(u.excuse());
         }
         return u.value();
@@ -53,7 +53,7 @@ public class TS_FileRaSimple {
 
     public TGS_Union<Long> getLongFromPostion(long position) {
         var u = call(jdb -> TS_FileRaSimpleUtils.getLongFromPostion(jdb, position));
-        if (u.isError()) {
+        if (u.isExcuse()) {
             return TGS_Union.ofExcuse(u.excuse());
         }
         return u.value();
@@ -61,7 +61,7 @@ public class TS_FileRaSimple {
 
     public TGS_Union<Long> setLongFromPostion_calcNextPosition(long position, long value) {
         var u = call(raf -> TS_FileRaSimpleUtils.setLongFromPostion_calcNextPosition(raf, position, value));
-        if (u.isError()) {
+        if (u.isExcuse()) {
             return TGS_Union.ofExcuse(u.excuse());
         }
         return u.value();
@@ -69,7 +69,7 @@ public class TS_FileRaSimple {
 
     public TGS_Union<String> getStringFromPostion(long position) {
         var u = call(jdb -> TS_FileRaSimpleUtils.getStringFromPostion(jdb, position));
-        if (u.isError()) {
+        if (u.isExcuse()) {
             return TGS_Union.ofExcuse(u.excuse());
         }
         return u.value();
@@ -78,7 +78,7 @@ public class TS_FileRaSimple {
     @Deprecated //WARNING: CHECK BYTE SIZE
     public TGS_Union<Long> setStringFromPostion_calcNextPosition(long position, String value) {
         var u = call(raf -> TS_FileRaSimpleUtils.setStringFromPostion_calcNextPosition(raf, position, value));
-        if (u.isError()) {
+        if (u.isExcuse()) {
             return TGS_Union.ofExcuse(u.excuse());
         }
         return u.value();

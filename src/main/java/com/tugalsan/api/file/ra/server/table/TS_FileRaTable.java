@@ -37,7 +37,7 @@ public class TS_FileRaTable {
             return TGS_Union.of(0L);
         }
         var u_sizeInBytes_db = TS_FileUtils.getFileSizeInBytes(path());
-        if (u_sizeInBytes_db.isError()) {
+        if (u_sizeInBytes_db.isExcuse()) {
             return u_sizeInBytes_db;
         }
         var sizeInBytes_db = u_sizeInBytes_db.value();
@@ -59,7 +59,7 @@ public class TS_FileRaTable {
             switch (colConfig_emptyRowI) {
                 case TS_FileRaTableCellDbl templateDbl -> {
                     var u_value = simple.getDoubleFromPostion(position);
-                    if (u_value.isError()) {
+                    if (u_value.isExcuse()) {
                         return TGS_Union.ofExcuse(u_value.excuse());
                     }
                     var value = u_value.value();
@@ -69,7 +69,7 @@ public class TS_FileRaTable {
                 }
                 case TS_FileRaTableCellLng templateLng -> {
                     var u_value = simple.getLongFromPostion(position);
-                    if (u_value.isError()) {
+                    if (u_value.isExcuse()) {
                         return TGS_Union.ofExcuse(u_value.excuse());
                     }
                     var value = u_value.value();
@@ -79,7 +79,7 @@ public class TS_FileRaTable {
                 }
                 case TS_FileRaTableCellStr templateStr -> {
                     var u_value = simple.getStringFromPostion(position);
-                    if (u_value.isError()) {
+                    if (u_value.isExcuse()) {
                         return TGS_Union.ofExcuse(u_value.excuse());
                     }
                     var value = u_value.value();
@@ -97,7 +97,7 @@ public class TS_FileRaTable {
 
     public TGS_Union<Boolean> rowIsEmpty(long idx) {
         var rowOp = rowGet(idx);
-        if (rowOp.isError()) {
+        if (rowOp.isExcuse()) {
             return TGS_Union.ofExcuse(d.className, "rowIsEmpty", "ERROR @ TS_FileRaTable.rowIsEmpty: rowOp.info.isEmpty()");
         }
         return TGS_Union.of(template.rowIsEmpty(rowOp.value()));
@@ -122,7 +122,7 @@ public class TS_FileRaTable {
             switch (newRowValueI) {
                 case TS_FileRaTableCellDbl valueDbl -> {
                     var u_position = simple.setDoubleFromPostion_calcNextPosition(position, valueDbl.get());
-                    if (u_position.isError()) {
+                    if (u_position.isExcuse()) {
                         return TGS_Union.ofExcuse(d.className, "rowSet", "TS_FileRaTableCellDbl->" + u_position.excuse().getMessage());
                     }
                     position = u_position.value();
@@ -130,7 +130,7 @@ public class TS_FileRaTable {
                 }
                 case TS_FileRaTableCellLng valueLng -> {
                     var u_position = simple.setDoubleFromPostion_calcNextPosition(position, valueLng.get());
-                    if (u_position.isError()) {
+                    if (u_position.isExcuse()) {
                         return TGS_Union.ofExcuse(d.className, "rowSet", "TS_FileRaTableCellLng->" + u_position.excuse().getMessage());
                     }
                     position = u_position.value();
@@ -142,7 +142,7 @@ public class TS_FileRaTable {
                         return TGS_Union.ofExcuse(d.className, "rowSet", "ERROR @ TS_JdbList.rowSet: emptyValue.byteSize() != newRowCell.byteSize()");
                     }
                     var u = simple.setStringFromPostion_calcNextPosition(position, valueStr.get());
-                    if (u.isError()) {
+                    if (u.isExcuse()) {
                         return TGS_Union.ofExcuse(d.className, "rowSet", "TS_FileRaTableCellStr->" + u.excuse().getMessage());
                     }
                     position += valueStr.byteSize();

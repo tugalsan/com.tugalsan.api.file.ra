@@ -24,7 +24,7 @@ public class TS_FileRaTableTest {
         template1Name.set_cropIfNotProper("Ali gel");
         for (var i = 0; i < 10000; i++) {
             var e = jdbt.rowSet(i, template0Id, template1Name, template2Price);
-            if (e.isError()) {
+            if (e.isExcuse()) {
                 throw new RuntimeException(e.excuse());
             }
         }
@@ -48,7 +48,7 @@ public class TS_FileRaTableTest {
                     template1Name.toValue_cropIfNotProper("FirstString"),
                     template2Price.toValue(r.nextDouble())
             );
-            if (e.isError()) {
+            if (e.isExcuse()) {
                 throw new RuntimeException(e.excuse());
             }
 
@@ -62,7 +62,7 @@ public class TS_FileRaTableTest {
                     template1Name.toValue_cropIfNotProper("SecondString"),
                     template2Price.toValue(r.nextDouble())
             );
-            if (e.isError()) {
+            if (e.isExcuse()) {
                 throw new RuntimeException(e.excuse());
             }
 
@@ -76,7 +76,7 @@ public class TS_FileRaTableTest {
                     template1Name.toValue_cropIfNotProper("ThirdString"),
                     template2Price.toValue(r.nextDouble())
             );
-            if (e.isError()) {
+            if (e.isExcuse()) {
                 throw new RuntimeException(e.excuse());
             }
 
@@ -90,7 +90,7 @@ public class TS_FileRaTableTest {
                     template1Name.toValue_cropIfNotProper("nSecondStringlksdjsald jlaskdj laskjd laskdj lkasjd laskdjlaskdj laskdj salkd "),
                     template2Price.toValue(r.nextDouble())
             );
-            if (e.isError()) {
+            if (e.isExcuse()) {
                 throw new RuntimeException(e.excuse());
             }
 

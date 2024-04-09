@@ -13,7 +13,7 @@ public class TS_FileRaObjectTest {
     public static void main(String... s) {
         var dbPath = TS_PathUtils.getPathCurrent_nio(TS_FileRaObjectTest.class.getName() + ".ra");
         var dbOp = TS_FileRaObjectFile.of(dbPath);
-        if (dbOp.isError()) {
+        if (dbOp.isExcuse()) {
             d.ct("main", dbOp.excuse());
             return;
         }
