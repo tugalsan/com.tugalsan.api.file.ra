@@ -24,8 +24,8 @@ public class TS_FileRaTableTest {
         template1Name.set_cropIfNotProper("Ali gel");
         for (var i = 0; i < 10000; i++) {
             var e = jdbt.rowSet(i, template0Id, template1Name, template2Price);
-            if (e != null) {
-                throw new RuntimeException(e);
+            if (e.isError()) {
+                throw new RuntimeException(e.excuse());
             }
         }
         d.cr("main", "colConfig.byteSize", jdbt.template.byteSize());
@@ -48,9 +48,10 @@ public class TS_FileRaTableTest {
                     template1Name.toValue_cropIfNotProper("FirstString"),
                     template2Price.toValue(r.nextDouble())
             );
-            if (e != null) {
-                throw new RuntimeException(e);
+            if (e.isError()) {
+                throw new RuntimeException(e.excuse());
             }
+
             d.cr("main", "FirstString", "rowSize", jdbt.rowSize());
         }
 
@@ -61,9 +62,10 @@ public class TS_FileRaTableTest {
                     template1Name.toValue_cropIfNotProper("SecondString"),
                     template2Price.toValue(r.nextDouble())
             );
-            if (e != null) {
-                throw new RuntimeException(e);
+            if (e.isError()) {
+                throw new RuntimeException(e.excuse());
             }
+
             d.cr("main", "SecondString", "rowSize", jdbt.rowSize());
         }
 
@@ -74,9 +76,10 @@ public class TS_FileRaTableTest {
                     template1Name.toValue_cropIfNotProper("ThirdString"),
                     template2Price.toValue(r.nextDouble())
             );
-            if (e != null) {
-                throw new RuntimeException(e);
+            if (e.isError()) {
+                throw new RuntimeException(e.excuse());
             }
+
             d.cr("main", "ThirdString", "rowSize", jdbt.rowSize());
         }
 
@@ -87,14 +90,15 @@ public class TS_FileRaTableTest {
                     template1Name.toValue_cropIfNotProper("nSecondStringlksdjsald jlaskdj laskjd laskdj lkasjd laskdjlaskdj laskdj salkd "),
                     template2Price.toValue(r.nextDouble())
             );
-            if (e != null) {
-                throw new RuntimeException(e);
+            if (e.isError()) {
+                throw new RuntimeException(e.excuse());
             }
+
             d.cr("main", "nSecondString", "rowSize", jdbt.rowSize());
         }
 
         for (var i = 0; i < 3; i++) {
-            var row = jdbt.rowGet(i).payload.get();
+            var row = jdbt.rowGet(i).value();
             d.cr("main", "for", i, row.get(0), row.get(1), row.get(2));
         }
     }

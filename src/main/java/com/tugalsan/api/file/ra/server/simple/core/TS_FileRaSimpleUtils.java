@@ -2,10 +2,10 @@ package com.tugalsan.api.file.ra.server.simple.core;
 
 import com.tugalsan.api.bytes.client.TGS_ByteLengthUtils;
 import com.tugalsan.api.log.server.TS_Log;
-import com.tugalsan.api.optional.client.TGS_Optional;
-import com.tugalsan.api.unsafe.client.TGS_UnSafe;
+import com.tugalsan.api.union.client.TGS_Union;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.RandomAccessFile;
 
 public class TS_FileRaSimpleUtils {
@@ -16,51 +16,63 @@ public class TS_FileRaSimpleUtils {
         return new RandomAccessFile(file, "rw");
     }
 
-    public static TGS_Optional<Double> getDoubleFromPostion(RandomAccessFile raf, long position) {
-        return TGS_UnSafe.call(() -> {
+    public static TGS_Union<Double> getDoubleFromPostion(RandomAccessFile raf, long position) {
+        try {
             raf.seek(position);
-            return TGS_Optional.of(raf.readDouble());
-        }, e -> TGS_Optional.ofEmpty(e.getClass().getSimpleName() + ":" + e.getMessage()));
+            return TGS_Union.of(raf.readDouble());
+        } catch (IOException ex) {
+            return TGS_Union.ofExcuse(ex);
+        }
     }
 
-    public static TGS_Optional<Long> setDoubleFromPostion_calcNextPosition(RandomAccessFile raf, long position, double value) {
-        return TGS_UnSafe.call(() -> {
+    public static TGS_Union<Long> setDoubleFromPostion_calcNextPosition(RandomAccessFile raf, long position, double value) {
+        try {
             raf.seek(position);
             raf.writeDouble(value);
-            return TGS_Optional.of(position + TGS_ByteLengthUtils.typeDouble());
-        }, e -> TGS_Optional.ofEmpty(e.getClass().getSimpleName() + ":" + e.getMessage()));
+            return TGS_Union.of(position + TGS_ByteLengthUtils.typeDouble());
+        } catch (IOException ex) {
+            return TGS_Union.ofExcuse(ex);
+        }
     }
 
-    public static TGS_Optional<Long> getLongFromPostion(RandomAccessFile raf, long position) {
-        return TGS_UnSafe.call(() -> {
+    public static TGS_Union<Long> getLongFromPostion(RandomAccessFile raf, long position) {
+        try {
             raf.seek(position);
-            return TGS_Optional.of(raf.readLong());
-        }, e -> TGS_Optional.ofEmpty(e.getClass().getSimpleName() + ":" + e.getMessage()));
+            return TGS_Union.of(raf.readLong());
+        } catch (IOException ex) {
+            return TGS_Union.ofExcuse(ex);
+        }
     }
 
-    public static TGS_Optional<Long> setLongFromPostion_calcNextPosition(RandomAccessFile raf, long position, long value) {
-        return TGS_UnSafe.call(() -> {
+    public static TGS_Union<Long> setLongFromPostion_calcNextPosition(RandomAccessFile raf, long position, long value) {
+        try {
             raf.seek(position);
             raf.writeLong(value);
-            return TGS_Optional.of(position + TGS_ByteLengthUtils.typeLong());
-        }, e -> TGS_Optional.ofEmpty(e.getClass().getSimpleName() + ":" + e.getMessage()));
+            return TGS_Union.of(position + TGS_ByteLengthUtils.typeLong());
+        } catch (IOException ex) {
+            return TGS_Union.ofExcuse(ex);
+        }
     }
 
-    public static TGS_Optional<String> getStringFromPostion(RandomAccessFile raf, long position) {
-        return TGS_UnSafe.call(() -> {
+    public static TGS_Union<String> getStringFromPostion(RandomAccessFile raf, long position) {
+        try {
             raf.seek(position);
-            var op = TGS_Optional.of(raf.readUTF());
+            var op = TGS_Union.of(raf.readUTF());
             d.ci("getStringFromPostion", "op", op);
             return op;
-        }, e -> TGS_Optional.ofEmpty(e.getClass().getSimpleName() + ":" + e.getMessage()));
+        } catch (IOException ex) {
+            return TGS_Union.ofExcuse(ex);
+        }
     }
 
     @Deprecated //WARNING: CHECK BYTE SIZE
-    public static TGS_Optional<Long> setStringFromPostion_calcNextPosition(RandomAccessFile raf, long position, String value) {
-        return TGS_UnSafe.call(() -> {
+    public static TGS_Union<Long> setStringFromPostion_calcNextPosition(RandomAccessFile raf, long position, String value) {
+        try {
             raf.seek(position);
             raf.writeUTF(value);
-            return TGS_Optional.of(position + TGS_ByteLengthUtils.typeStringUTF8(value));
-        }, e -> TGS_Optional.ofEmpty(e.getClass().getSimpleName() + ":" + e.getMessage()));
+            return TGS_Union.of(position + TGS_ByteLengthUtils.typeStringUTF8(value));
+        } catch (IOException ex) {
+            return TGS_Union.ofExcuse(ex);
+        }
     }
 }

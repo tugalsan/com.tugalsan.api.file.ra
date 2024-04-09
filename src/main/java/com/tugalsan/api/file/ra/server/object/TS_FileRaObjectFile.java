@@ -1,8 +1,7 @@
 package com.tugalsan.api.file.ra.server.object;
 
 import com.tugalsan.api.file.server.TS_FileUtils;
-import com.tugalsan.api.optional.client.TGS_Optional;
-import com.tugalsan.api.unsafe.client.TGS_UnSafe;
+import com.tugalsan.api.union.client.TGS_Union;
 import java.io.*;
 import java.nio.file.Path;
 import java.util.*;
@@ -17,8 +16,15 @@ public class TS_FileRaObjectFile extends TS_FileRaObjectBase {
      */
     protected ConcurrentHashMap memIndex;
 
-    public static TGS_Optional<TS_FileRaObjectFile> of(Path dbPath) {
-        return TGS_UnSafe.call(() -> TS_FileUtils.isExistFile(dbPath) ? TGS_Optional.of(new TS_FileRaObjectFile(dbPath, "rw")) : TGS_Optional.of(new TS_FileRaObjectFile(dbPath, 64)), e -> TGS_Optional.ofEmpty(e.getClass().getSimpleName() + ":" + e.getMessage()));
+    public static TGS_Union<TS_FileRaObjectFile> of(Path dbPath) {
+        try {
+            if (TS_FileUtils.isExistFile(dbPath)) {
+                return TGS_Union.of(new TS_FileRaObjectFile(dbPath, "rw"));
+            }
+            return TGS_Union.of(new TS_FileRaObjectFile(dbPath, 64));
+        } catch (IOException | TS_FileRaObjectException ex) {
+            return TGS_Union.ofExcuse(ex);
+        }
     }
 
     /**
