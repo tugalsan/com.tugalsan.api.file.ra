@@ -61,7 +61,7 @@ public class TS_FileRaTable {
                 case TS_FileRaTableCellDbl templateDbl -> {
                     var u_value = simple.getDoubleFromPostion(position);
                     if (u_value.isExcuse()) {
-                        return TGS_Union.ofExcuse(u_value.excuse());
+                        return u_value.toExcuse();
                     }
                     var value = u_value.value();
                     lst.add(templateDbl.toValue(value));
@@ -71,7 +71,7 @@ public class TS_FileRaTable {
                 case TS_FileRaTableCellLng templateLng -> {
                     var u_value = simple.getLongFromPostion(position);
                     if (u_value.isExcuse()) {
-                        return TGS_Union.ofExcuse(u_value.excuse());
+                        return u_value.toExcuse();
                     }
                     var value = u_value.value();
                     lst.add(templateLng.toValue(value));
@@ -81,7 +81,7 @@ public class TS_FileRaTable {
                 case TS_FileRaTableCellStr templateStr -> {
                     var u_value = simple.getStringFromPostion(position);
                     if (u_value.isExcuse()) {
-                        return TGS_Union.ofExcuse(u_value.excuse());
+                        return u_value.toExcuse();
                     }
                     var value = u_value.value();
                     lst.add(templateStr.toValue_cropIfNotProper(value));
