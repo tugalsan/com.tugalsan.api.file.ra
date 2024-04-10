@@ -3,8 +3,8 @@ package com.tugalsan.api.file.ra.server.table;
 import com.tugalsan.api.file.server.TS_FileUtils;
 import com.tugalsan.api.file.ra.server.simple.TS_FileRaSimple;
 import com.tugalsan.api.log.server.TS_Log;
-import com.tugalsan.api.union.client.TGS_Union;
 import com.tugalsan.api.union.client.TGS_UnionExcuse;
+import com.tugalsan.api.union.client.TGS_UnionExcuseVoid;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,9 +33,9 @@ public class TS_FileRaTable {
         return simple.path;
     }
 
-    public TGS_Union<Long> rowSize() {
+    public TGS_UnionExcuse<Long> rowSize() {
         if (!TS_FileUtils.isExistFile(path())) {
-            return TGS_Union.of(0L);
+            return TGS_UnionExcuse.of(0L);
         }
         var u_sizeInBytes_db = TS_FileUtils.getFileSizeInBytes(path());
         if (u_sizeInBytes_db.isExcuse()) {
@@ -43,7 +43,7 @@ public class TS_FileRaTable {
         }
         var sizeInBytes_db = u_sizeInBytes_db.value();
         var sizeInBytes_row = template.byteSize();
-        return TGS_Union.of(sizeInBytes_db / sizeInBytes_row);
+        return TGS_UnionExcuse.of(sizeInBytes_db / sizeInBytes_row);
     }
 
     private long position(long idx) {
@@ -52,7 +52,7 @@ public class TS_FileRaTable {
         return pos;
     }
 
-    public TGS_Union<List<TS_FileRaTableCellBase>> rowGet(long idx) {
+    public TGS_UnionExcuse<List<TS_FileRaTableCellBase>> rowGet(long idx) {
         List<TS_FileRaTableCellBase> lst = new ArrayList();
         var position = position(idx);
         for (var i = 0; i < template.columns.size(); i++) {
@@ -89,42 +89,42 @@ public class TS_FileRaTable {
                     d.ci("rowGet", "i", i, "pos", position);
                 }
                 default -> {
-                    return TGS_Union.ofExcuse(d.className, "rowGet", "ERROR @ TS_JdbList.rowGet: unkwon col type");
+                    return TGS_UnionExcuse.ofExcuse(d.className, "rowGet", "ERROR @ TS_JdbList.rowGet: unkwon col type");
                 }
             }
         }
-        return TGS_Union.of(lst);
+        return TGS_UnionExcuse.of(lst);
     }
 
-    public TGS_Union<Boolean> rowIsEmpty(long idx) {
+    public TGS_UnionExcuse<Boolean> rowIsEmpty(long idx) {
         var rowOp = rowGet(idx);
         if (rowOp.isExcuse()) {
-            return TGS_Union.ofExcuse(d.className, "rowIsEmpty", "ERROR @ TS_FileRaTable.rowIsEmpty: rowOp.info.isEmpty()");
+            return TGS_UnionExcuse.ofExcuse(d.className, "rowIsEmpty", "ERROR @ TS_FileRaTable.rowIsEmpty: rowOp.info.isEmpty()");
         }
-        return TGS_Union.of(template.rowIsEmpty(rowOp.value()));
+        return TGS_UnionExcuse.of(template.rowIsEmpty(rowOp.value()));
     }
 
-    public TGS_UnionExcuse rowSetEmpty(long idx) {
+    public TGS_UnionExcuseVoid rowSetEmpty(long idx) {
         return rowSet(idx, template.rowCreateEmpty());
     }
 
-    public TGS_UnionExcuse rowSet(long idx, TS_FileRaTableCellBase... rowValues) {
+    public TGS_UnionExcuseVoid rowSet(long idx, TS_FileRaTableCellBase... rowValues) {
         return rowSet(idx, List.of(rowValues));
     }
 
-    public TGS_UnionExcuse rowSet(long idx, List<? extends TS_FileRaTableCellBase> newRow) {
+    public TGS_UnionExcuseVoid rowSet(long idx, List<? extends TS_FileRaTableCellBase> newRow) {
         var position = position(idx);
         for (var i = 0; i < template.columns.size(); i++) {
             var colConfig_emptyRowI = template.columns.get(i);
             var newRowValueI = newRow.get(i);
             if (!Objects.equals(newRowValueI.getClass(), colConfig_emptyRowI.getClass())) {
-                return TGS_UnionExcuse.ofExcuse(d.className, "rowSet", "ERROR @ TS_JdbList.rowSet: !Objects.equals(newRowValueI.getClass(), colConfig_emptyRowI.getClass())");
+                return TGS_UnionExcuseVoid.ofExcuse(d.className, "rowSet", "ERROR @ TS_JdbList.rowSet: !Objects.equals(newRowValueI.getClass(), colConfig_emptyRowI.getClass())");
             }
             switch (newRowValueI) {
                 case TS_FileRaTableCellDbl valueDbl -> {
                     var u_position = simple.setDoubleFromPostion_calcNextPosition(position, valueDbl.get());
                     if (u_position.isExcuse()) {
-                        return TGS_UnionExcuse.ofExcuse(d.className, "rowSet", "TS_FileRaTableCellDbl->" + u_position.excuse().getMessage());
+                        return TGS_UnionExcuseVoid.ofExcuse(d.className, "rowSet", "TS_FileRaTableCellDbl->" + u_position.excuse().getMessage());
                     }
                     position = u_position.value();
                     d.ci("rowSet", "i", i, "pos", position);
@@ -132,7 +132,7 @@ public class TS_FileRaTable {
                 case TS_FileRaTableCellLng valueLng -> {
                     var u_position = simple.setDoubleFromPostion_calcNextPosition(position, valueLng.get());
                     if (u_position.isExcuse()) {
-                        return TGS_UnionExcuse.ofExcuse(d.className, "rowSet", "TS_FileRaTableCellLng->" + u_position.excuse().getMessage());
+                        return TGS_UnionExcuseVoid.ofExcuse(d.className, "rowSet", "TS_FileRaTableCellLng->" + u_position.excuse().getMessage());
                     }
                     position = u_position.value();
                     d.ci("rowSet", "i", i, "pos", position);
@@ -140,11 +140,11 @@ public class TS_FileRaTable {
                 case TS_FileRaTableCellStr valueStr -> {
                     var emptyValue = (TS_FileRaTableCellStr) colConfig_emptyRowI;
                     if (emptyValue.byteSize() != valueStr.byteSize()) {
-                        return TGS_UnionExcuse.ofExcuse(d.className, "rowSet", "ERROR @ TS_JdbList.rowSet: emptyValue.byteSize() != newRowCell.byteSize()");
+                        return TGS_UnionExcuseVoid.ofExcuse(d.className, "rowSet", "ERROR @ TS_JdbList.rowSet: emptyValue.byteSize() != newRowCell.byteSize()");
                     }
                     var u = simple.setStringFromPostion_calcNextPosition(position, valueStr.get());
                     if (u.isExcuse()) {
-                        return TGS_UnionExcuse.ofExcuse(d.className, "rowSet", "TS_FileRaTableCellStr->" + u.excuse().getMessage());
+                        return TGS_UnionExcuseVoid.ofExcuse(d.className, "rowSet", "TS_FileRaTableCellStr->" + u.excuse().getMessage());
                     }
                     position += valueStr.byteSize();
                     d.ci("rowSet", "i", i, "pos", position);
@@ -153,6 +153,6 @@ public class TS_FileRaTable {
                     throw new RuntimeException("ERROR @ TS_JdbList.rowSet: unkwon col type");
             }
         }
-        return TGS_UnionExcuse.ofVoid();
+        return TGS_UnionExcuseVoid.ofVoid();
     }
 }

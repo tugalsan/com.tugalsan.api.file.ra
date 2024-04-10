@@ -1,7 +1,7 @@
 package com.tugalsan.api.file.ra.server.object;
 
 import com.tugalsan.api.file.server.TS_FileUtils;
-import com.tugalsan.api.union.client.TGS_Union;
+import com.tugalsan.api.union.client.TGS_UnionExcuse;
 import java.io.*;
 import java.nio.file.Path;
 import java.util.*;
@@ -16,14 +16,14 @@ public class TS_FileRaObjectFile extends TS_FileRaObjectBase {
      */
     protected ConcurrentHashMap memIndex;
 
-    public static TGS_Union<TS_FileRaObjectFile> of(Path dbPath) {
+    public static TGS_UnionExcuse<TS_FileRaObjectFile> of(Path dbPath) {
         try {
             if (TS_FileUtils.isExistFile(dbPath)) {
-                return TGS_Union.of(new TS_FileRaObjectFile(dbPath, "rw"));
+                return TGS_UnionExcuse.of(new TS_FileRaObjectFile(dbPath, "rw"));
             }
-            return TGS_Union.of(new TS_FileRaObjectFile(dbPath, 64));
+            return TGS_UnionExcuse.of(new TS_FileRaObjectFile(dbPath, 64));
         } catch (IOException | TS_FileRaObjectException ex) {
-            return TGS_Union.ofExcuse(ex);
+            return TGS_UnionExcuse.ofExcuse(ex);
         }
     }
 
