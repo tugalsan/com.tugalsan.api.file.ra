@@ -20,7 +20,7 @@ public class TS_FileRaSimpleUtils {
         return TGS_UnSafe.call(() -> {
             raf.seek(position);
             return TGS_Optional.of(raf.readDouble());
-        }, e -> TGS_Optional.ofEmpty(e.getClass().getSimpleName() + ":" + e.getMessage()));
+        }, e -> TGS_Optional.ofEmpty_NullPointerException(e.getClass().getSimpleName() + ":" + e.getMessage()));
     }
 
     public static TGS_Optional<Long> setDoubleFromPostion_calcNextPosition(RandomAccessFile raf, long position, double value) {
@@ -28,14 +28,14 @@ public class TS_FileRaSimpleUtils {
             raf.seek(position);
             raf.writeDouble(value);
             return TGS_Optional.of(position + TGS_ByteLengthUtils.typeDouble());
-        }, e -> TGS_Optional.ofEmpty(e.getClass().getSimpleName() + ":" + e.getMessage()));
+        }, e -> TGS_Optional.ofEmpty_NullPointerException(e.getClass().getSimpleName() + ":" + e.getMessage()));
     }
 
     public static TGS_Optional<Long> getLongFromPostion(RandomAccessFile raf, long position) {
         return TGS_UnSafe.call(() -> {
             raf.seek(position);
             return TGS_Optional.of(raf.readLong());
-        }, e -> TGS_Optional.ofEmpty(e.getClass().getSimpleName() + ":" + e.getMessage()));
+        }, e -> TGS_Optional.ofEmpty_NullPointerException(e.getClass().getSimpleName() + ":" + e.getMessage()));
     }
 
     public static TGS_Optional<Long> setLongFromPostion_calcNextPosition(RandomAccessFile raf, long position, long value) {
@@ -43,7 +43,7 @@ public class TS_FileRaSimpleUtils {
             raf.seek(position);
             raf.writeLong(value);
             return TGS_Optional.of(position + TGS_ByteLengthUtils.typeLong());
-        }, e -> TGS_Optional.ofEmpty(e.getClass().getSimpleName() + ":" + e.getMessage()));
+        }, e -> TGS_Optional.ofEmpty_NullPointerException(e.getClass().getSimpleName() + ":" + e.getMessage()));
     }
 
     public static TGS_Optional<String> getStringFromPostion(RandomAccessFile raf, long position) {
@@ -52,7 +52,7 @@ public class TS_FileRaSimpleUtils {
             var op = TGS_Optional.of(raf.readUTF());
             d.ci("getStringFromPostion", "op", op);
             return op;
-        }, e -> TGS_Optional.ofEmpty(e.getClass().getSimpleName() + ":" + e.getMessage()));
+        }, e -> TGS_Optional.ofEmpty_NullPointerException(e.getClass().getSimpleName() + ":" + e.getMessage()));
     }
 
     @Deprecated //WARNING: CHECK BYTE SIZE
@@ -61,6 +61,6 @@ public class TS_FileRaSimpleUtils {
             raf.seek(position);
             raf.writeUTF(value);
             return TGS_Optional.of(position + TGS_ByteLengthUtils.typeStringUTF8(value));
-        }, e -> TGS_Optional.ofEmpty(e.getClass().getSimpleName() + ":" + e.getMessage()));
+        }, e -> TGS_Optional.ofEmpty_NullPointerException(e.getClass().getSimpleName() + ":" + e.getMessage()));
     }
 }

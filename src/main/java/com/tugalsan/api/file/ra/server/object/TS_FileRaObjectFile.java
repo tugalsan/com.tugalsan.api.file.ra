@@ -18,7 +18,7 @@ public class TS_FileRaObjectFile extends TS_FileRaObjectBase {
     protected ConcurrentHashMap memIndex;
 
     public static TGS_Optional<TS_FileRaObjectFile> of(Path dbPath) {
-        return TGS_UnSafe.call(() -> TS_FileUtils.isExistFile(dbPath) ? TGS_Optional.of(new TS_FileRaObjectFile(dbPath, "rw")) : TGS_Optional.of(new TS_FileRaObjectFile(dbPath, 64)), e -> TGS_Optional.ofEmpty(e.getClass().getSimpleName() + ":" + e.getMessage()));
+        return TGS_UnSafe.call(() -> TS_FileUtils.isExistFile(dbPath) ? TGS_Optional.of(new TS_FileRaObjectFile(dbPath, "rw")) : TGS_Optional.of(new TS_FileRaObjectFile(dbPath, 64)), e -> TGS_Optional.ofEmpty_NullPointerException(e.getClass().getSimpleName() + ":" + e.getMessage()));
     }
 
     /**

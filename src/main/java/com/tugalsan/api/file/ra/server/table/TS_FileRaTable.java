@@ -72,7 +72,7 @@ public class TS_FileRaTable {
                     position += templateStr.byteSize();
                     d.ci("rowGet", "i", i, "pos", position);
                 }
-                default -> TGS_Optional.ofEmpty("ERROR @ TS_JdbList.rowGet: unkwon col type");
+                default -> TGS_Optional.ofEmpty_NullPointerException("ERROR @ TS_JdbList.rowGet: unkwon col type");
             }
         }
         return TGS_Optional.of(lst);

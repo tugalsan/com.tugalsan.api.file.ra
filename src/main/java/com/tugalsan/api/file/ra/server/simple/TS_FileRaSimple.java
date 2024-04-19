@@ -29,7 +29,7 @@ public class TS_FileRaSimple {
             try (var raf = TS_FileRaSimpleUtils.create(file)) {
                 return TGS_Optional.of(call.call(raf));
             }
-        }, e -> TGS_Optional.ofEmpty(e.getClass().getSimpleName() + ":" + e.getMessage()), () -> lock.unlock());
+        }, e -> TGS_Optional.ofEmpty_NullPointerException(e.getClass().getSimpleName() + ":" + e.getMessage()), () -> lock.unlock());
     }
     final private Lock lock = new ReentrantLock();
 
