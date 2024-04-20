@@ -1,7 +1,7 @@
 module com.tugalsan.api.file.ra {
     requires com.tugalsan.api.bytes;
     requires com.tugalsan.api.file;
-    requires com.tugalsan.api.optional;
+    requires com.tugalsan.api.union;
     requires com.tugalsan.api.stream;
     requires com.tugalsan.api.unsafe;
     requires com.tugalsan.api.log;

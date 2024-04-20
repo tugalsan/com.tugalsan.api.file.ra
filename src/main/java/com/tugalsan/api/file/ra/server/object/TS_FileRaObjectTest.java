@@ -13,12 +13,12 @@ public class TS_FileRaObjectTest {
     public static void main(String... s) {
         TGS_UnSafe.run(() -> {
             var dbPath = TS_PathUtils.getPathCurrent_nio(TS_FileRaObjectTest.class.getName() + ".ra");
-            var dbOp = TS_FileRaObjectFile.of(dbPath);
-            if (dbOp.payload.isEmpty()) {
-                d.ce("main", "ERROR @ RecordsFile.of", dbOp.info);
+            var u = TS_FileRaObjectFile.of(dbPath);
+            if (u.isExcuse()) {
+                d.ce("main", "ERROR @ RecordsFile.of", u.excuse().getMessage());
                 return;
             }
-            var db = dbOp.payload.get();
+            var db = u.value();
             var r = new Random();
             {//load
                 var rw = new TS_FileRaObjectWriter("foo.lastAccessTime");

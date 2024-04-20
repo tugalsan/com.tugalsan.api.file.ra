@@ -18,8 +18,8 @@ public class TS_FileRaSimpleTest {
         var positionInit = 100;
         d.cr("main", "positionInit", positionInit);
         var jdbs = TS_FileRaSimple.of(dbPath);
-        var positionNext = jdbs.setStringFromPostion_calcNextPosition(positionInit, "Hello World!").orThrowFirstInfo();
-        var hw = jdbs.getStringFromPostion(positionInit).orThrowFirstInfo();
+        var positionNext = jdbs.setStringFromPostion_calcNextPosition(positionInit, "Hello World!");
+        var hw = jdbs.getStringFromPostion(positionInit);
         d.cr("main", "hw", hw);
         d.cr("main", "positionNext", positionNext);
     }
