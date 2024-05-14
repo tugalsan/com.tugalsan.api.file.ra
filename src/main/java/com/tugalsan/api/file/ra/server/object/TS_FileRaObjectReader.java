@@ -34,9 +34,6 @@ public class TS_FileRaObjectReader {
         return objIn;
     }
 
-    /**
-     * Reads the next object in the record using an ObjectInputStream.
-     */
     public Object readObject() throws IOException, OptionalDataException, ClassNotFoundException {
         return getObjectInputStream().readObject();
     }
