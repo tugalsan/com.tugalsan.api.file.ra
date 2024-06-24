@@ -6,7 +6,6 @@ module com.tugalsan.api.file.ra {
     requires com.tugalsan.api.unsafe;
     requires com.tugalsan.api.log;
     requires com.tugalsan.api.callable;
-    requires com.tugalsan.api.runnable;
     exports com.tugalsan.api.file.ra.server.object;
     exports com.tugalsan.api.file.ra.server.simple;
     exports com.tugalsan.api.file.ra.server.table;
