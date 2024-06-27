@@ -1,7 +1,7 @@
 package com.tugalsan.api.file.ra.server.simple;
 
 import com.tugalsan.api.file.ra.server.simple.core.TS_FileRaSimpleUtils;
-import com.tugalsan.api.callable.client.TGS_CallableType1;
+import com.tugalsan.api.function.client.TGS_Func_OutTyped_In1;
 import com.tugalsan.api.union.client.TGS_UnionExcuse;
 import com.tugalsan.api.unsafe.client.TGS_UnSafe;
 import java.io.File;
@@ -23,7 +23,7 @@ public class TS_FileRaSimple {
         return new TS_FileRaSimple(path);
     }
 
-    private <T> TGS_UnionExcuse<T> call(TGS_CallableType1<TGS_UnionExcuse<T>, RandomAccessFile> call) {
+    private <T> TGS_UnionExcuse<T> call(TGS_Func_OutTyped_In1<TGS_UnionExcuse<T>, RandomAccessFile> call) {
         return TGS_UnSafe.call(() -> {
             lock.lock();
             try (var raf = TS_FileRaSimpleUtils.create(file)) {
