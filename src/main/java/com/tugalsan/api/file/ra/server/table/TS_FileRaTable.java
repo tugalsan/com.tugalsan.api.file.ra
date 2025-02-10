@@ -5,7 +5,7 @@ import com.tugalsan.api.file.ra.server.simple.TS_FileRaSimple;
 import com.tugalsan.api.log.server.TS_Log;
 import com.tugalsan.api.union.client.TGS_UnionExcuse;
 import com.tugalsan.api.union.client.TGS_UnionExcuseVoid;
-import com.tugalsan.api.unsafe.client.TGS_UnSafe;
+import com.tugalsan.api.function.client.maythrow.checkedexceptions.TGS_FuncMTCEUtils;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -106,7 +106,7 @@ public class TS_FileRaTable {
     }
 
     public TGS_UnionExcuseVoid rowSet(long idx, List<? extends TS_FileRaTableCellBase> newRow) {
-        return TGS_UnSafe.call(() -> {
+        return TGS_FuncMTCEUtils.call(() -> {
             var position = position(idx);
             for (var i = 0; i < template.columns.size(); i++) {
                 var colConfig_emptyRowI = template.columns.get(i);
