@@ -40,6 +40,6 @@ public class TS_FileRaTableTemplate {
     }
 
     public boolean rowIsEmpty(List<? extends TS_FileRaTableCellBase> rowValues) {
-        return rowValues.stream().filter(value -> !value.isEmpty()).findAny().isEmpty();
+        return rowValues.stream().noneMatch(value -> !value.isEmpty());
     }
 }
