@@ -1,9 +1,9 @@
 package com.tugalsan.api.file.ra.server.simple;
 
 import com.tugalsan.api.file.ra.server.simple.core.TS_FileRaSimpleUtils;
-import com.tugalsan.api.function.client.maythrow.uncheckedexceptions.TGS_FuncMTUCE_OutTyped_In1;
+import com.tugalsan.api.function.client.maythrowexceptions.unchecked.TGS_FuncMTU_OutTyped_In1;
 import com.tugalsan.api.union.client.TGS_UnionExcuse;
-import com.tugalsan.api.function.client.maythrow.checkedexceptions.TGS_FuncMTCEUtils;
+import com.tugalsan.api.function.client.maythrowexceptions.checked.TGS_FuncMTCUtils;
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.nio.file.Path;
@@ -23,8 +23,8 @@ public class TS_FileRaSimple {
         return new TS_FileRaSimple(path);
     }
 
-    private <T> TGS_UnionExcuse<T> call(TGS_FuncMTUCE_OutTyped_In1<TGS_UnionExcuse<T>, RandomAccessFile> call) {
-        return TGS_FuncMTCEUtils.call(() -> {
+    private <T> TGS_UnionExcuse<T> call(TGS_FuncMTU_OutTyped_In1<TGS_UnionExcuse<T>, RandomAccessFile> call) {
+        return TGS_FuncMTCUtils.call(() -> {
             lock.lock();
             try (var raf = TS_FileRaSimpleUtils.create(file)) {
                 var u = call.call(raf);

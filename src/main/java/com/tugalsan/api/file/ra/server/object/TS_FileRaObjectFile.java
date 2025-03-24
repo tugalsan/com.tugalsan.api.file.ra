@@ -2,7 +2,7 @@ package com.tugalsan.api.file.ra.server.object;
 
 import com.tugalsan.api.file.server.TS_FileUtils;
 import com.tugalsan.api.union.client.TGS_UnionExcuse;
-import com.tugalsan.api.function.client.maythrow.checkedexceptions.TGS_FuncMTCEUtils;
+import com.tugalsan.api.function.client.maythrowexceptions.checked.TGS_FuncMTCUtils;
 import java.io.*;
 import java.nio.file.Path;
 import java.util.*;
@@ -18,7 +18,7 @@ public class TS_FileRaObjectFile extends TS_FileRaObjectBase {
     protected ConcurrentHashMap memIndex;
 
     public static TGS_UnionExcuse<TS_FileRaObjectFile> of(Path dbPath) {
-        return TGS_FuncMTCEUtils.call(() -> {
+        return TGS_FuncMTCUtils.call(() -> {
             if (!TS_FileUtils.isExistFile(dbPath)) {
                 return TGS_UnionExcuse.of(new TS_FileRaObjectFile(dbPath, 64));
             }

@@ -2,7 +2,7 @@ package com.tugalsan.api.file.ra.server.object;
 
 import com.tugalsan.api.file.server.TS_PathUtils;
 import com.tugalsan.api.log.server.TS_Log;
-import com.tugalsan.api.function.client.maythrow.checkedexceptions.TGS_FuncMTCEUtils;
+import com.tugalsan.api.function.client.maythrowexceptions.checked.TGS_FuncMTCUtils;
 import static java.lang.System.out;
 import java.util.Random;
 
@@ -11,7 +11,7 @@ public class TS_FileRaObjectTest {
     final private static TS_Log d = TS_Log.of(false, TS_FileRaObjectTest.class);
 
     public static void main(String... s) {
-        TGS_FuncMTCEUtils.run(() -> {
+        TGS_FuncMTCUtils.run(() -> {
             var dbPath = TS_PathUtils.getPathCurrent_nio(TS_FileRaObjectTest.class.getName() + ".ra");
             var u = TS_FileRaObjectFile.of(dbPath);
             if (u.isExcuse()) {
