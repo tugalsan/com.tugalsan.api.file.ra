@@ -34,7 +34,8 @@ public class TS_FileRaTableTemplate {
                 case TS_FileRaTableCellStr templateStr -> {
                     return templateStr.toValueEmpty();
                 }
-                default -> throw new RuntimeException("ERROR @ TS_JdbList.rowNew: unkwon col type");
+                default ->
+                    throw new RuntimeException("ERROR @ TS_JdbList.rowNew: unkwon col type");
             }
         }));
     }

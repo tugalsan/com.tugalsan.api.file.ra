@@ -1,6 +1,6 @@
 package com.tugalsan.api.file.ra.server.table;
 
-public class TS_FileRaTableCellDbl extends TS_FileRaTableCellBase {
+public class TS_FileRaTableCellDbl implements TS_FileRaTableCellBase {
 
     @Override
     public int byteSize() {

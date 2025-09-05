@@ -10,7 +10,14 @@ import java.io.RandomAccessFile;
 
 public class TS_FileRaSimpleUtils {
 
-    final private static TS_Log d = TS_Log.of(false, TS_FileRaSimpleUtils.class);
+    private TS_FileRaSimpleUtils() {
+
+    }
+
+    private static TS_Log d() {
+        return d.orElse(TS_Log.of(TS_FileRaSimpleUtils.class));
+    }
+    final private static StableValue<TS_Log> d = StableValue.of();
 
     public static RandomAccessFile create(File file) throws FileNotFoundException {
         return new RandomAccessFile(file, "rw");
@@ -50,7 +57,7 @@ public class TS_FileRaSimpleUtils {
         return TGS_FuncMTCUtils.call(() -> {
             raf.seek(position);
             var op = TGS_UnionExcuse.of(raf.readUTF());
-            d.ci("getStringFromPostion", "op", op);
+            d().ci("getStringFromPostion", "op", op);
             return op;
         }, e -> TGS_UnionExcuse.ofExcuse(e));
     }

@@ -13,7 +13,10 @@ import java.util.Objects;
 
 public class TS_FileRaTable {
 
-    final private static TS_Log d = TS_Log.of(false, TS_FileRaTable.class);
+    private static TS_Log d() {
+        return d.orElse(TS_Log.of(TS_FileRaTable.class));
+    }
+    final private static StableValue<TS_Log> d = StableValue.of();
 
     private TS_FileRaTable(Path path, TS_FileRaTableTemplate colConfig) {
         this.simple = TS_FileRaSimple.of(path);
@@ -45,7 +48,7 @@ public class TS_FileRaTable {
 
     private long position(long idx) {
         var pos = idx * template.byteSize();
-        d.ci("position", pos);
+        d().ci("position", pos);
         return pos;
     }
 
@@ -62,7 +65,7 @@ public class TS_FileRaTable {
                     }
                     lst.add(templateDbl.toValue(u.value()));
                     position += templateDbl.byteSize();
-                    d.ci("rowGet", "i", i, "pos", position);
+                    d().ci("rowGet", "i", i, "pos", position);
                 }
                 case TS_FileRaTableCellLng templateLng -> {
                     var u = simple.getLongFromPostion(position);
@@ -71,7 +74,7 @@ public class TS_FileRaTable {
                     }
                     lst.add(templateLng.toValue(u.value()));
                     position += templateLng.byteSize();
-                    d.ci("rowGet", "i", i, "pos", position);
+                    d().ci("rowGet", "i", i, "pos", position);
                 }
                 case TS_FileRaTableCellStr templateStr -> {
                     var u = simple.getStringFromPostion(position);
@@ -80,10 +83,10 @@ public class TS_FileRaTable {
                     }
                     lst.add(templateStr.toValue_cropIfNotProper(u.value()));
                     position += templateStr.byteSize();
-                    d.ci("rowGet", "i", i, "pos", position);
+                    d().ci("rowGet", "i", i, "pos", position);
                 }
                 default ->
-                    TGS_UnionExcuse.ofExcuse(d.className, "rowGet", "unkwon col type");
+                    TGS_UnionExcuse.ofExcuse(d().className, "rowGet", "unkwon col type");
             }
         }
         return TGS_UnionExcuse.of(lst);
@@ -92,7 +95,7 @@ public class TS_FileRaTable {
     public TGS_UnionExcuse<Boolean> rowIsEmpty(long idx) {
         var rowOp = rowGet(idx);
         if (rowOp.isExcuse()) {
-            return rowOp.ofExcuse(d.className, "rowIsEmpty", "rowOp.info.isEmpty()");
+            return rowOp.ofExcuse(d().className, "rowIsEmpty", "rowOp.info.isEmpty()");
         }
         return TGS_UnionExcuse.of(template.rowIsEmpty(rowOp.value()));
     }
@@ -121,7 +124,7 @@ public class TS_FileRaTable {
                             return u.toExcuseVoid();
                         }
                         position = u.value();
-                        d.ci("rowSet", "i", i, "pos", position);
+                        d().ci("rowSet", "i", i, "pos", position);
                     }
                     case TS_FileRaTableCellLng valueDbl -> {
                         var u = simple.setLongFromPostion_calcNextPosition(position, valueDbl.get());
@@ -129,7 +132,7 @@ public class TS_FileRaTable {
                             return u.toExcuseVoid();
                         }
                         position = u.value();
-                        d.ci("rowSet", "i", i, "pos", position);
+                        d().ci("rowSet", "i", i, "pos", position);
                     }
                     case TS_FileRaTableCellStr valueStr -> {
                         var emptyValue = (TS_FileRaTableCellStr) colConfig_emptyRowI;
@@ -141,7 +144,7 @@ public class TS_FileRaTable {
                             return u.toExcuseVoid();
                         }
                         position += valueStr.byteSize();
-                        d.ci("rowSet", "i", i, "pos", position);
+                        d().ci("rowSet", "i", i, "pos", position);
                     }
                     default ->
                         throw new RuntimeException("ERROR @ TS_JdbList.rowSet: unkwon col type");

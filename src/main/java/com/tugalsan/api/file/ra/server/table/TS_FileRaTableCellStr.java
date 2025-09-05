@@ -2,7 +2,7 @@ package com.tugalsan.api.file.ra.server.table;
 
 import com.tugalsan.api.bytes.client.TGS_ByteLengthUtils;
 
-public class TS_FileRaTableCellStr extends TS_FileRaTableCellBase {
+public class TS_FileRaTableCellStr implements TS_FileRaTableCellBase {
 
     @Override
     public int byteSize() {
