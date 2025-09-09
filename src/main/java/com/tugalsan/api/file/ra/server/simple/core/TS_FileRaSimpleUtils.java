@@ -1,12 +1,14 @@
 package com.tugalsan.api.file.ra.server.simple.core;
 
 import com.tugalsan.api.bytes.client.TGS_ByteLengthUtils;
+import com.tugalsan.api.file.ra.server.simple.TS_FileRaSimpleTest;
 import com.tugalsan.api.log.server.TS_Log;
 import com.tugalsan.api.union.client.TGS_UnionExcuse;
 import com.tugalsan.api.function.client.maythrowexceptions.checked.TGS_FuncMTCUtils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.RandomAccessFile;
+import java.util.function.Supplier;
 
 public class TS_FileRaSimpleUtils {
 
@@ -14,10 +16,7 @@ public class TS_FileRaSimpleUtils {
 
     }
 
-    private static TS_Log d() {
-        return d.orElse(TS_Log.of(TS_FileRaSimpleUtils.class));
-    }
-    final private static StableValue<TS_Log> d = StableValue.of();
+    final private static Supplier<TS_Log> d = StableValue.supplier(() -> TS_Log.of(TS_FileRaSimpleUtils.class));
 
     public static RandomAccessFile create(File file) throws FileNotFoundException {
         return new RandomAccessFile(file, "rw");
@@ -57,7 +56,7 @@ public class TS_FileRaSimpleUtils {
         return TGS_FuncMTCUtils.call(() -> {
             raf.seek(position);
             var op = TGS_UnionExcuse.of(raf.readUTF());
-            d().ci("getStringFromPostion", "op", op);
+            d.get().ci("getStringFromPostion", "op", op);
             return op;
         }, e -> TGS_UnionExcuse.ofExcuse(e));
     }
