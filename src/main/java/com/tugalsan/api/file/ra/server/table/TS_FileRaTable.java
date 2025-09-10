@@ -2,7 +2,6 @@ package com.tugalsan.api.file.ra.server.table;
 
 import com.tugalsan.api.file.server.TS_FileUtils;
 import com.tugalsan.api.file.ra.server.simple.TS_FileRaSimple;
-import com.tugalsan.api.file.ra.server.simple.core.TS_FileRaSimpleUtils;
 import com.tugalsan.api.log.server.TS_Log;
 import com.tugalsan.api.union.client.TGS_UnionExcuse;
 import com.tugalsan.api.union.client.TGS_UnionExcuseVoid;
@@ -11,11 +10,10 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Supplier;
 
 public class TS_FileRaTable {
 
-    final private static Supplier<TS_Log> d = StableValue.supplier(() -> TS_Log.of(TS_FileRaTable.class));
+    final private static TS_Log d = TS_Log.of(TS_FileRaTable.class);
 
     private TS_FileRaTable(Path path, TS_FileRaTableTemplate colConfig) {
         this.simple = TS_FileRaSimple.of(path);
@@ -47,7 +45,7 @@ public class TS_FileRaTable {
 
     private long position(long idx) {
         var pos = idx * template.byteSize();
-        d.get().ci("position", pos);
+        d.ci("position", pos);
         return pos;
     }
 
@@ -64,7 +62,7 @@ public class TS_FileRaTable {
                     }
                     lst.add(templateDbl.toValue(u.value()));
                     position += templateDbl.byteSize();
-                    d.get().ci("rowGet", "i", i, "pos", position);
+                    d.ci("rowGet", "i", i, "pos", position);
                 }
                 case TS_FileRaTableCellLng templateLng -> {
                     var u = simple.getLongFromPostion(position);
@@ -73,7 +71,7 @@ public class TS_FileRaTable {
                     }
                     lst.add(templateLng.toValue(u.value()));
                     position += templateLng.byteSize();
-                    d.get().ci("rowGet", "i", i, "pos", position);
+                    d.ci("rowGet", "i", i, "pos", position);
                 }
                 case TS_FileRaTableCellStr templateStr -> {
                     var u = simple.getStringFromPostion(position);
@@ -82,10 +80,10 @@ public class TS_FileRaTable {
                     }
                     lst.add(templateStr.toValue_cropIfNotProper(u.value()));
                     position += templateStr.byteSize();
-                    d.get().ci("rowGet", "i", i, "pos", position);
+                    d.ci("rowGet", "i", i, "pos", position);
                 }
                 default ->
-                    TGS_UnionExcuse.ofExcuse(d.get().className, "rowGet", "unkwon col type");
+                    TGS_UnionExcuse.ofExcuse(d.className(), "rowGet", "unkwon col type");
             }
         }
         return TGS_UnionExcuse.of(lst);
@@ -94,7 +92,7 @@ public class TS_FileRaTable {
     public TGS_UnionExcuse<Boolean> rowIsEmpty(long idx) {
         var rowOp = rowGet(idx);
         if (rowOp.isExcuse()) {
-            return rowOp.ofExcuse(d.get().className, "rowIsEmpty", "rowOp.info.isEmpty()");
+            return rowOp.ofExcuse(d.className(), "rowIsEmpty", "rowOp.info.isEmpty()");
         }
         return TGS_UnionExcuse.of(template.rowIsEmpty(rowOp.value()));
     }
@@ -123,7 +121,7 @@ public class TS_FileRaTable {
                             return u.toExcuseVoid();
                         }
                         position = u.value();
-                        d.get().ci("rowSet", "i", i, "pos", position);
+                        d.ci("rowSet", "i", i, "pos", position);
                     }
                     case TS_FileRaTableCellLng valueDbl -> {
                         var u = simple.setLongFromPostion_calcNextPosition(position, valueDbl.get());
@@ -131,7 +129,7 @@ public class TS_FileRaTable {
                             return u.toExcuseVoid();
                         }
                         position = u.value();
-                        d.get().ci("rowSet", "i", i, "pos", position);
+                        d.ci("rowSet", "i", i, "pos", position);
                     }
                     case TS_FileRaTableCellStr valueStr -> {
                         var emptyValue = (TS_FileRaTableCellStr) colConfig_emptyRowI;
@@ -143,7 +141,7 @@ public class TS_FileRaTable {
                             return u.toExcuseVoid();
                         }
                         position += valueStr.byteSize();
-                        d.get().ci("rowSet", "i", i, "pos", position);
+                        d.ci("rowSet", "i", i, "pos", position);
                     }
                     default ->
                         throw new RuntimeException("ERROR @ TS_JdbList.rowSet: unkwon col type");

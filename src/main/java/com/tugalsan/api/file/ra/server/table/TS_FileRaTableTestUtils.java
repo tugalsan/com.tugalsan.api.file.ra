@@ -4,7 +4,6 @@ import com.tugalsan.api.file.server.TS_PathUtils;
 import com.tugalsan.api.log.server.TS_Log;
 import java.nio.file.Path;
 import java.util.Random;
-import java.util.function.Supplier;
 
 public class TS_FileRaTableTestUtils {
 
@@ -12,11 +11,11 @@ public class TS_FileRaTableTestUtils {
 
     }
 
-    final private static Supplier<TS_Log> d = StableValue.supplier(() -> TS_Log.of(TS_FileRaTableTestUtils.class));
+    final private static TS_Log d = TS_Log.of(TS_FileRaTableTestUtils.class);
 
     public static void test() {
         var dbPath = TS_PathUtils.getPathCurrent_nio(TS_FileRaTableTestUtils.class.getName() + ".ra");
-        d.get().cr("main", "dbPath", dbPath);
+        d.cr("main", "dbPath", dbPath);
 //        table_size(dbPath);
         table_set_get(dbPath);
     }
@@ -33,8 +32,8 @@ public class TS_FileRaTableTestUtils {
                 throw new RuntimeException(u.excuse());
             }
         }
-        d.get().cr("main", "colConfig.byteSize", jdbt.template.byteSize());
-        d.get().cr("main", "rowSize", jdbt.rowSize());
+        d.cr("main", "colConfig.byteSize", jdbt.template.byteSize());
+        d.cr("main", "rowSize", jdbt.rowSize());
     }
 
     public static void table_set_get(Path dbPath) {
@@ -44,7 +43,7 @@ public class TS_FileRaTableTestUtils {
         var template2Price = TS_FileRaTableCellDbl.ofTemplate();
 
         var jdbt = TS_FileRaTable.of(dbPath, template0Id, template1Name, template2Price);
-        d.get().cr("main", "rowSize", jdbt.rowSize());
+        d.cr("main", "rowSize", jdbt.rowSize());
 
         {
             var u = jdbt.rowSet(
@@ -56,7 +55,7 @@ public class TS_FileRaTableTestUtils {
             if (u.isExcuse()) {
                 throw new RuntimeException(u.excuse());
             }
-            d.get().cr("main", "FirstString", "rowSize", jdbt.rowSize());
+            d.cr("main", "FirstString", "rowSize", jdbt.rowSize());
         }
 
         {
@@ -69,7 +68,7 @@ public class TS_FileRaTableTestUtils {
             if (u.isExcuse()) {
                 throw new RuntimeException(u.excuse());
             }
-            d.get().cr("main", "SecondString", "rowSize", jdbt.rowSize());
+            d.cr("main", "SecondString", "rowSize", jdbt.rowSize());
         }
 
         {
@@ -82,7 +81,7 @@ public class TS_FileRaTableTestUtils {
             if (u.isExcuse()) {
                 throw new RuntimeException(u.excuse());
             }
-            d.get().cr("main", "ThirdString", "rowSize", jdbt.rowSize());
+            d.cr("main", "ThirdString", "rowSize", jdbt.rowSize());
         }
 
         {
@@ -95,7 +94,7 @@ public class TS_FileRaTableTestUtils {
             if (u.isExcuse()) {
                 throw new RuntimeException(u.excuse());
             }
-            d.get().cr("main", "nSecondString", "rowSize", jdbt.rowSize());
+            d.cr("main", "nSecondString", "rowSize", jdbt.rowSize());
         }
 
         for (var i = 0; i < 3; i++) {
@@ -104,7 +103,7 @@ public class TS_FileRaTableTestUtils {
                 throw new RuntimeException(u.excuse());
             }
             var row = u.value();
-            d.get().cr("main", "for", i, row.get(0), row.get(1), row.get(2));
+            d.cr("main", "for", i, row.get(0), row.get(1), row.get(2));
         }
     }
 }
