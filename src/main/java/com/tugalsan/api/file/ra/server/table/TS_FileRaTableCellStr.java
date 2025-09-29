@@ -1,6 +1,6 @@
 package com.tugalsan.api.file.ra.server.table;
 
-import com.tugalsan.api.bytes.client.TGS_ByteLengthUtils;
+import module com.tugalsan.api.bytes;
 
 public class TS_FileRaTableCellStr implements TS_FileRaTableCellBase {
 

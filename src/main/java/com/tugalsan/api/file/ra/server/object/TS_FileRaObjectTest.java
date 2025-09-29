@@ -1,9 +1,9 @@
 package com.tugalsan.api.file.ra.server.object;
 
-import com.tugalsan.api.file.server.TS_PathUtils;
-import com.tugalsan.api.log.server.TS_Log;
-import com.tugalsan.api.function.client.maythrowexceptions.checked.TGS_FuncMTCUtils;
-import java.util.Random;
+import module com.tugalsan.api.file;
+import module com.tugalsan.api.log;
+import module com.tugalsan.api.function;
+import java.util.*;
 
 public class TS_FileRaObjectTest {
 
